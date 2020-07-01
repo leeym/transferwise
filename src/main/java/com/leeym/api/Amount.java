@@ -1,15 +1,17 @@
 package com.leeym.api;
 
+import java.math.BigDecimal;
+
 public class Amount {
-    private final Long value;
+    private final BigDecimal value;
     private final String currency;
 
-    public Amount(String currency, Long value) {
+    public Amount(String currency, BigDecimal value) {
         this.currency = currency;
         this.value = value;
     }
 
-    public Long getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 

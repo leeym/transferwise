@@ -4,6 +4,7 @@ import com.leeym.api.*;
 import com.leeym.common.CurrencyCode;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,9 @@ class RebalanceTest extends BaseAPITest {
     public void test1() {
         List<BorderlessAccount> borderlessAccounts = borderlessAccountsAPI.getBorderlessAccounts(REAL_SANDBOX_PERSONAL_PROFILE_ID);
         BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
-        Map<String, Map<String, Float>> rates = new TreeMap<>();
+        Map<String, BigDecimal> rateToUSD = new TreeMap<>();
         ratesAPI.getRates(new CurrencyCode("USD")).forEach(rate -> {
-            rates.computeIfAbsent(rate.getSource(), k -> new HashMap<>()).put(rate.getTarget(), rate.getRate());
+            rateToUSD.put(rate.getTarget(), rate.getRate());
         });
         List<Amount> amounts = borderlessAccount.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
@@ -29,9 +30,9 @@ class RebalanceTest extends BaseAPITest {
             if (sourceAmount.getCurrency().equals("USD")) {
                 map.put(sourceAmount, sourceAmount);
             } else {
-                long sourceValue = sourceAmount.getValue();
-                float rate = rates.get(sourceAmount.getCurrency()).get("USD");
-                long targetValue = (long) ((float) sourceValue * rate);
+                BigDecimal sourceValue = sourceAmount.getValue();
+                BigDecimal rate = rateToUSD.get(sourceAmount.getCurrency());
+                BigDecimal targetValue = sourceValue.multiply(rate);
                 Amount targetAmount = new Amount("USD", targetValue);
                 map.put(sourceAmount, targetAmount);
             }

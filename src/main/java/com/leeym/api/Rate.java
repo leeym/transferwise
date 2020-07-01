@@ -1,8 +1,10 @@
 package com.leeym.api;
 
+import java.math.BigDecimal;
+
 // https://api-docs.transferwise.com/#exchange-rates
 public class Rate {
-    private Float rate;
+    private BigDecimal rate;
     private String source;
     private String target;
     private String time;
@@ -17,7 +19,7 @@ public class Rate {
                 '}';
     }
 
-    public Float getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
