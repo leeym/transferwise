@@ -7,6 +7,10 @@ public class Balance {
     private String balanceType;
     private String currency;
 
+    public Amount getAmount() {
+        return amount;
+    }
+
     @Override
     public String toString() {
         return "Balance{" +

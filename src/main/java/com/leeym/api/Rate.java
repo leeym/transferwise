@@ -1,7 +1,8 @@
 package com.leeym.api;
 
+// https://api-docs.transferwise.com/#exchange-rates
 public class Rate {
-    private Long rate;
+    private Float rate;
     private String source;
     private String target;
     private String time;
@@ -16,7 +17,7 @@ public class Rate {
                 '}';
     }
 
-    public Long getRate() {
+    public Float getRate() {
         return rate;
     }
 

@@ -1,6 +1,8 @@
 package com.leeym.api;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BorderlessAccount {
     private String id;
@@ -11,6 +13,10 @@ public class BorderlessAccount {
     private Boolean active;
     private Boolean eligible;
     private Balance[] balances;
+
+    public List<Balance> getBalances() {
+        return Arrays.stream(balances).collect(Collectors.toList());
+    }
 
     @Override
     public String toString() {
