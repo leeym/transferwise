@@ -5,10 +5,10 @@ import java.math.RoundingMode;
 import java.util.Currency;
 
 public class Amount {
-    private final String currency;
+    private final Currency currency;
     private final BigDecimal value;
 
-    public Amount(String currency, BigDecimal value) {
+    public Amount(Currency currency, BigDecimal value) {
         this.currency = currency;
         this.value = value;
     }
@@ -17,24 +17,15 @@ public class Amount {
         return value;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
     @Override
     public String toString() {
-        try {
-            return "Amount{" +
-                    "currency='" + this.currency + '\'' +
-                    ", value=" + value.setScale(Currency.getInstance(currency).getDefaultFractionDigits(), RoundingMode.HALF_UP) +
-                    '}';
-        } catch (IllegalArgumentException e) {
-            System.err.println(currency + " not found");
-            return "Amount{" +
-                    "currency='" + currency + '\'' +
-                    ", value=" + value +
-                    '}';
-
-        }
+        return "Amount{" +
+                "currency='" + this.currency.getCurrencyCode() + '\'' +
+                ", value=" + value.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_UP) +
+                '}';
     }
 }

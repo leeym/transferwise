@@ -14,8 +14,8 @@ class RebalanceTest extends BaseAPITest {
 
     @Disabled
     @Test
-    public void test1() {
+    public void testCall() {
         Rebalance rebalance = new Rebalance(borderlessAccountsAPI, ratesAPI, REAL_SANDBOX_PERSONAL_PROFILE_ID);
-        rebalance.run();
+        rebalance.call();
     }
 }

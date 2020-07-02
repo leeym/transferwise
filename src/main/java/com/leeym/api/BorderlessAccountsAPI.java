@@ -19,4 +19,9 @@ public class BorderlessAccountsAPI extends BaseAPI {
         BorderlessAccount[] borderlessAccounts = new Gson().fromJson(json, BorderlessAccount[].class);
         return Arrays.stream(borderlessAccounts).collect(Collectors.toList());
     }
+
+    public CurrencyPairs getCurrencyPairs() {
+        String json = get("/v1/currency-pairs");
+        return new Gson().fromJson(json, CurrencyPairs.class);
+    }
 }

@@ -35,6 +35,7 @@ public class BaseAPI {
                 .header("Authorization", "Bearer " + token)
                 .build();
         try {
+            System.err.println("GET " + uri);
             return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);

@@ -1,8 +1,9 @@
 package com.leeym.operation;
 
 import com.leeym.api.*;
-import com.leeym.common.CurrencyCode;
 import com.leeym.common.ProfileId;
+import com.leeym.common.SourceCurrencyCode;
+import com.leeym.common.TargetCurrencyCode;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,20 +26,18 @@ public class Rebalance implements Callable<String> {
     public String call() {
         List<BorderlessAccount> borderlessAccounts = borderlessAccountsAPI.getBorderlessAccounts(profileId);
         BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
-        Map<String, BigDecimal> rateToUSD = new TreeMap<>();
-        ratesAPI.getRates(new CurrencyCode("USD")).forEach(rate -> {
-            rateToUSD.put(rate.getSource(), rate.getRate());
-        });
         List<Amount> amounts = borderlessAccount.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         for (Amount sourceAmount : amounts) {
-            if (sourceAmount.getCurrency().equals("USD")) {
+            if (sourceAmount.getCurrency().equals(Currency.getInstance("USD"))) {
                 map.put(sourceAmount, sourceAmount);
             } else {
                 BigDecimal sourceValue = sourceAmount.getValue();
-                BigDecimal rate = rateToUSD.get(sourceAmount.getCurrency());
-                BigDecimal targetValue = sourceValue.multiply(rate);
-                Amount targetAmount = new Amount("USD", targetValue);
+                SourceCurrencyCode sourceCurrencyCode = new SourceCurrencyCode(sourceAmount.getCurrency().getCurrencyCode());
+                TargetCurrencyCode targetCurrencyCode = new TargetCurrencyCode("USD");
+                Rate rate = ratesAPI.getRate(sourceCurrencyCode, targetCurrencyCode);
+                BigDecimal targetValue = sourceValue.multiply(rate.getRate());
+                Amount targetAmount = new Amount(Currency.getInstance("USD"), targetValue);
                 map.put(sourceAmount, targetAmount);
             }
             System.err.println(Arrays.asList(sourceAmount, map.get(sourceAmount)));

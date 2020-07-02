@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.*;
 
 class BorderlessAccountsAPITest extends BaseAPITest {
     private final BorderlessAccountsAPI api = new BorderlessAccountsAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
@@ -16,5 +16,18 @@ class BorderlessAccountsAPITest extends BaseAPITest {
         Assertions.assertEquals(1, borderlessAccounts.size());
         BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
         System.err.println(borderlessAccount);
+    }
+
+    @Disabled
+    @Test
+    public void testCurrencyPairs() {
+        CurrencyPairs currencyPairs = api.getCurrencyPairs();
+        Map<String, Set<String>> map = new HashMap<>();
+        for (CurrencyPairs.SourceCurrencies sourceCurrency : currencyPairs.sourceCurrencies) {
+            for (CurrencyPairs.TargetCurrencies targetCurrency : sourceCurrency.targetCurrencies) {
+                map.computeIfAbsent(sourceCurrency.currencyCode, k->new HashSet<>()).add(targetCurrency.currencyCode);
+            }
+        }
+        System.err.println(map);
     }
 }
