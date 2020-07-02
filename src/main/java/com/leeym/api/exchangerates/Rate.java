@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.api.exchangerates;
 
 import java.math.BigDecimal;
 import java.util.Currency;

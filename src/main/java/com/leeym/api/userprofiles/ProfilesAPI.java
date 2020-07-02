@@ -1,6 +1,8 @@
-package com.leeym.api;
+package com.leeym.api.userprofiles;
 
 import com.google.gson.Gson;
+import com.leeym.api.BaseAPI;
+import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
 import com.leeym.common.ProfileId;
 

@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.api.borderlessaccounts;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

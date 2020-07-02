@@ -1,5 +1,6 @@
 package com.leeym.api;
 
+import com.google.gson.Gson;
 import com.leeym.common.APIToken;
 
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 public class BaseAPI {
     private final Stage stage;
@@ -31,6 +33,7 @@ public class BaseAPI {
     protected String get(String path) {
         URI uri = URI.create(getUriPrefix() + path);
         HttpRequest request = HttpRequest.newBuilder()
+                .method("GET", HttpRequest.BodyPublishers.noBody())
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .build();
@@ -42,4 +45,21 @@ public class BaseAPI {
         }
     }
 
+    protected String post(String path, Object object) {
+        URI uri = URI.create(getUriPrefix() + path);
+        String json = new Gson().toJson(object);
+        HttpRequest request = HttpRequest.newBuilder()
+                .method("POST", HttpRequest.BodyPublishers.ofString(json))
+                .uri(uri)
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .build();
+        System.err.println("POST " + uri);
+        System.err.println(json);
+        try {
+            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

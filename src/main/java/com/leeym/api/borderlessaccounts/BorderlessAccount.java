@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.api.borderlessaccounts;
 
 import java.util.Arrays;
 import java.util.List;

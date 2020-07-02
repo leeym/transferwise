@@ -1,5 +1,8 @@
 package com.leeym.api;
 
+import com.leeym.api.borderlessaccounts.BorderlessAccount;
+import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
+import com.leeym.api.borderlessaccounts.CurrencyPairs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

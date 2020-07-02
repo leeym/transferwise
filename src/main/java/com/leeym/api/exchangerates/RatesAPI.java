@@ -1,6 +1,8 @@
-package com.leeym.api;
+package com.leeym.api.exchangerates;
 
 import com.google.gson.Gson;
+import com.leeym.api.BaseAPI;
+import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
 
 import java.util.Currency;

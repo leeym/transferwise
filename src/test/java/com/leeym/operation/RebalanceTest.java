@@ -1,8 +1,8 @@
 package com.leeym.operation;
 
 import com.leeym.api.BaseAPITest;
-import com.leeym.api.BorderlessAccountsAPI;
-import com.leeym.api.RatesAPI;
+import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
+import com.leeym.api.exchangerates.RatesAPI;
 import com.leeym.api.Stage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

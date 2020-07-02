@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.api.userprofiles;
 
 import com.leeym.common.ProfileId;
 

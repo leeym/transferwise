@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.api.borderlessaccounts;
 
 public class BankDetails {
     private String id;
