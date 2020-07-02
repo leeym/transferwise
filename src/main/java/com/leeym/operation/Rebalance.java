@@ -24,23 +24,14 @@ public class Rebalance implements Callable<String> {
     public String call() {
         List<BorderlessAccount> borderlessAccounts = borderlessAccountsAPI.getBorderlessAccounts(profileId);
         BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
-        CurrencyPairs currencyPairs = borderlessAccountsAPI.getCurrencyPairs();
-        Map<Currency, Set<Currency>> currencySetMap = new HashMap<>();
-        for (CurrencyPairs.SourceCurrency sourceCurrency : currencyPairs.sourceCurrencies) {
-            for (CurrencyPairs.TargetCurrency targetCurrency : sourceCurrency.targetCurrencies) {
-                currencySetMap.computeIfAbsent(Currency.getInstance(sourceCurrency.currencyCode), k -> new HashSet<>()).add(Currency.getInstance(targetCurrency.currencyCode));
-            }
-        }
         List<Amount> amounts = borderlessAccount.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         for (Amount sourceAmount : amounts) {
             if (sourceAmount.getCurrency().equals(Currency.getInstance("USD"))) {
                 map.put(sourceAmount, sourceAmount);
             } else {
-                Currency sourceCurrency= sourceAmount.getCurrency();
+                Currency sourceCurrency = sourceAmount.getCurrency();
                 Currency targetCurrency = Currency.getInstance("USD");
-                assert currencySetMap.containsKey(sourceCurrency);
-                assert currencySetMap.get(sourceCurrency).contains(targetCurrency);
                 BigDecimal sourceValue = sourceAmount.getValue();
                 Rate rate = ratesAPI.getRate(sourceCurrency, targetCurrency);
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
