@@ -2,8 +2,6 @@ package com.leeym.operation;
 
 import com.leeym.api.*;
 import com.leeym.common.ProfileId;
-import com.leeym.common.SourceCurrencyCode;
-import com.leeym.common.TargetCurrencyCode;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -26,16 +24,25 @@ public class Rebalance implements Callable<String> {
     public String call() {
         List<BorderlessAccount> borderlessAccounts = borderlessAccountsAPI.getBorderlessAccounts(profileId);
         BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
+        CurrencyPairs currencyPairs = borderlessAccountsAPI.getCurrencyPairs();
+        Map<Currency, Set<Currency>> currencySetMap = new HashMap<>();
+        for (CurrencyPairs.SourceCurrency sourceCurrency : currencyPairs.sourceCurrencies) {
+            for (CurrencyPairs.TargetCurrency targetCurrency : sourceCurrency.targetCurrencies) {
+                currencySetMap.computeIfAbsent(Currency.getInstance(sourceCurrency.currencyCode), k -> new HashSet<>()).add(Currency.getInstance(targetCurrency.currencyCode));
+            }
+        }
         List<Amount> amounts = borderlessAccount.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         for (Amount sourceAmount : amounts) {
             if (sourceAmount.getCurrency().equals(Currency.getInstance("USD"))) {
                 map.put(sourceAmount, sourceAmount);
             } else {
+                Currency sourceCurrency= sourceAmount.getCurrency();
+                Currency targetCurrency = Currency.getInstance("USD");
+                assert currencySetMap.containsKey(sourceCurrency);
+                assert currencySetMap.get(sourceCurrency).contains(targetCurrency);
                 BigDecimal sourceValue = sourceAmount.getValue();
-                SourceCurrencyCode sourceCurrencyCode = new SourceCurrencyCode(sourceAmount.getCurrency().getCurrencyCode());
-                TargetCurrencyCode targetCurrencyCode = new TargetCurrencyCode("USD");
-                Rate rate = ratesAPI.getRate(sourceCurrencyCode, targetCurrencyCode);
+                Rate rate = ratesAPI.getRate(sourceCurrency, targetCurrency);
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
                 Amount targetAmount = new Amount(Currency.getInstance("USD"), targetValue);
                 map.put(sourceAmount, targetAmount);

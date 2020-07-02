@@ -23,8 +23,8 @@ class BorderlessAccountsAPITest extends BaseAPITest {
     public void testCurrencyPairs() {
         CurrencyPairs currencyPairs = api.getCurrencyPairs();
         Map<String, Set<String>> map = new HashMap<>();
-        for (CurrencyPairs.SourceCurrencies sourceCurrency : currencyPairs.sourceCurrencies) {
-            for (CurrencyPairs.TargetCurrencies targetCurrency : sourceCurrency.targetCurrencies) {
+        for (CurrencyPairs.SourceCurrency sourceCurrency : currencyPairs.sourceCurrencies) {
+            for (CurrencyPairs.TargetCurrency targetCurrency : sourceCurrency.targetCurrencies) {
                 map.computeIfAbsent(sourceCurrency.currencyCode, k->new HashSet<>()).add(targetCurrency.currencyCode);
             }
         }

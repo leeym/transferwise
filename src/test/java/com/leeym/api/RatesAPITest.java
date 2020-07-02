@@ -1,13 +1,10 @@
 package com.leeym.api;
 
-import com.leeym.common.CurrencyCode;
-import com.leeym.common.SourceCurrencyCode;
-import com.leeym.common.TargetCurrencyCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Currency;
 
 class RatesAPITest extends BaseAPITest {
 
@@ -16,20 +13,9 @@ class RatesAPITest extends BaseAPITest {
     @Disabled
     @Test
     public void testRate() {
-        Rate rate = api.getRate(new SourceCurrencyCode("USD"), new TargetCurrencyCode("EUR"));
+        Rate rate = api.getRate(Currency.getInstance("USD"), Currency.getInstance("EUR"));
         Assertions.assertEquals("USD", rate.getSource());
         Assertions.assertEquals("EUR", rate.getTarget());
         System.err.println(rate);
-    }
-
-    @Disabled
-    @Test
-    public void testRates() {
-        List<Rate> rates = api.getRates(new TargetCurrencyCode("USD"));
-        Assertions.assertFalse(rates.isEmpty());
-        for (Rate rate : rates) {
-            Assertions.assertEquals("USD", rate.getTarget());
-            System.err.println(rate);
-        }
     }
 }

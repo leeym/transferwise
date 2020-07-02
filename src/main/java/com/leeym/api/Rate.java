@@ -1,12 +1,13 @@
 package com.leeym.api;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 // https://api-docs.transferwise.com/#exchange-rates
 public class Rate {
     private BigDecimal rate;
-    private String source;
-    private String target;
+    private Currency source;
+    private Currency target;
     private String time;
 
     @Override
@@ -23,11 +24,11 @@ public class Rate {
         return rate;
     }
 
-    public String getSource() {
+    public Currency getSource() {
         return source;
     }
 
-    public String getTarget() {
+    public Currency getTarget() {
         return target;
     }
 

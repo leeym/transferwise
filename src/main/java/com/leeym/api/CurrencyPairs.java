@@ -3,19 +3,19 @@ package com.leeym.api;
 import java.math.BigDecimal;
 
 public class CurrencyPairs {
-    SourceCurrencies[] sourceCurrencies;
-    Integer total;
+    public SourceCurrency[] sourceCurrencies;
+    public Integer total;
 
-    public static class SourceCurrencies {
-        String currencyCode;
-        BigDecimal maxInvoiceAmount;
-        TargetCurrencies[] targetCurrencies;
-        Integer totalTargetCurrencies;
+    public static class SourceCurrency {
+        public String currencyCode;
+        public BigDecimal maxInvoiceAmount;
+        public TargetCurrency[] targetCurrencies;
+        public Integer totalTargetCurrencies;
     }
 
-    public static class TargetCurrencies {
-        String currencyCode;
-        BigDecimal minInvoiceAmount;
-        Boolean fixedTargetPaymentAllowed;
+    public static class TargetCurrency {
+        public String currencyCode;
+        public BigDecimal minInvoiceAmount;
+        public Boolean fixedTargetPaymentAllowed;
     }
 }
