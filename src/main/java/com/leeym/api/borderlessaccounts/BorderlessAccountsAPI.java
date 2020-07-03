@@ -5,6 +5,9 @@ import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
 import com.leeym.common.ProfileId;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 // https://api-docs.transferwise.com/#borderless-accounts
 public class BorderlessAccountsAPI extends BaseAPI {
     public BorderlessAccountsAPI(Stage stage, APIToken token) {
