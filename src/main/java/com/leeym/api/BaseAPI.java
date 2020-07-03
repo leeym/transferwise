@@ -3,8 +3,10 @@ package com.leeym.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.leeym.common.APIToken;
+import com.leeym.common.LocalDateTimeTypeAdapter;
 import com.leeym.common.LocalDateTypeAdapter;
 import com.leeym.common.LocalTimeTypeAdapter;
+import com.leeym.common.OffsetDateTimeTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,7 +14,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 public class BaseAPI {
     protected final Gson gson;
@@ -33,6 +37,8 @@ public class BaseAPI {
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .registerTypeAdapter(LocalTime.class, new LocalTimeTypeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+                .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeTypeAdapter())
                 .create();
     }
 
