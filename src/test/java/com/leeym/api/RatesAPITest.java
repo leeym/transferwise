@@ -2,11 +2,13 @@ package com.leeym.api;
 
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesAPI;
+import com.leeym.api.exchangerates.RatesRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Currency;
+import java.util.List;
 
 class RatesAPITest extends BaseAPITest {
 
@@ -15,9 +17,12 @@ class RatesAPITest extends BaseAPITest {
     @Disabled
     @Test
     public void testRate() {
-        Rate rate = api.getRate(Currency.getInstance("USD"), Currency.getInstance("EUR"));
-        Assertions.assertEquals("USD", rate.getSource());
-        Assertions.assertEquals("EUR", rate.getTarget());
-        System.err.println(rate);
+        RatesRequest request = new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"));
+        List<Rate> rates = api.getRates(request);
+        Assertions.assertEquals(1, rates.size());
+        Rate rate = rates.get(0);
+        Assertions.assertEquals(Currency.getInstance("USD"), rate.getSource());
+        Assertions.assertEquals(Currency.getInstance("EUR"), rate.getTarget());
+        System.err.println(rates);
     }
 }

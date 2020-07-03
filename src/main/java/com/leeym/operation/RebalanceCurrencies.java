@@ -6,6 +6,7 @@ import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesAPI;
+import com.leeym.api.exchangerates.RatesRequest;
 import com.leeym.common.ProfileId;
 
 import java.math.BigDecimal;
@@ -13,13 +14,13 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-public class Rebalance implements Callable<String> {
+public class RebalanceCurrencies implements Callable<String> {
 
     private final BorderlessAccountsAPI borderlessAccountsAPI;
     private final RatesAPI ratesAPI;
     private final ProfileId profileId;
 
-    public Rebalance(BorderlessAccountsAPI borderlessAccountsAPI, RatesAPI ratesAPI, ProfileId profileId) {
+    public RebalanceCurrencies(BorderlessAccountsAPI borderlessAccountsAPI, RatesAPI ratesAPI, ProfileId profileId) {
         this.borderlessAccountsAPI = borderlessAccountsAPI;
         this.ratesAPI = ratesAPI;
         this.profileId = profileId;
@@ -38,7 +39,7 @@ public class Rebalance implements Callable<String> {
                 Currency sourceCurrency = sourceAmount.getCurrency();
                 Currency targetCurrency = Currency.getInstance("USD");
                 BigDecimal sourceValue = sourceAmount.getValue();
-                Rate rate = ratesAPI.getRate(sourceCurrency, targetCurrency);
+                Rate rate = ratesAPI.getRates(new RatesRequest(sourceCurrency, targetCurrency)).get(0);
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
                 Amount targetAmount = new Amount(Currency.getInstance("USD"), targetValue);
                 map.put(sourceAmount, targetAmount);

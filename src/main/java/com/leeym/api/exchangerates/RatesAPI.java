@@ -5,8 +5,10 @@ import com.leeym.api.BaseAPI;
 import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
 
-import java.util.Currency;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 // https://api-docs.transferwise.com/#exchange-rates
 public class RatesAPI extends BaseAPI {
@@ -14,11 +16,11 @@ public class RatesAPI extends BaseAPI {
         super(stage, token);
     }
 
-    public Rate getRate(Currency source, Currency target) {
-        Objects.requireNonNull(source);
-        Objects.requireNonNull(target);
-        String json = get("/v1/rates?source=" + source.getCurrencyCode() + "&target=" + target.getCurrencyCode());
+    public List<Rate> getRates(RatesRequest request) {
+        Objects.requireNonNull(request);
+        String query = request.toQueryString();
+        String json = get("/v1/rates" + (query.isEmpty() ? "" : "?" + query));
         Rate[] rates = new Gson().fromJson(json, Rate[].class);
-        return new Gson().fromJson(json, Rate[].class)[0];
+        return Arrays.stream(rates).collect(Collectors.toList());
     }
 }

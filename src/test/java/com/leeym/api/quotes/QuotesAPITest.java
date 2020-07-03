@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class QuotesAPITest extends BaseAPITest {
 
     private final QuotesAPI api = new QuotesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
