@@ -1,6 +1,5 @@
 package com.leeym.operation;
 
-import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.Amount;
 import com.leeym.api.borderlessaccounts.Balance;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
@@ -33,9 +32,8 @@ public class RebalanceCurrencies implements Callable<String> {
 
     @Override
     public String call() {
-        List<BorderlessAccount> borderlessAccounts = borderlessAccountsAPI.getBorderlessAccounts(profileId);
-        List<Amount> amounts = Iterables.getOnlyElement(borderlessAccounts).getBalances().stream()
-                .map(Balance::getAmount).collect(Collectors.toList());
+        BorderlessAccount account = borderlessAccountsAPI.getBorderlessAccount(profileId);
+        List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         for (Amount sourceAmount : amounts) {
             if (sourceAmount.getCurrency().equals(Currency.getInstance("USD"))) {

@@ -17,8 +17,7 @@ class BorderlessAccountsApiITCase extends BaseApiITCase {
 
     @Test
     public void testBorderlessAccounts() {
-        List<BorderlessAccount> borderlessAccounts = api.getBorderlessAccounts(REAL_SANDBOX_PERSONAL_PROFILE_ID);
-        BorderlessAccount borderlessAccount = Iterables.getOnlyElement(borderlessAccounts);
+        BorderlessAccount borderlessAccount = api.getBorderlessAccount(REAL_SANDBOX_PERSONAL_PROFILE_ID);
         System.err.println(borderlessAccount);
     }
 

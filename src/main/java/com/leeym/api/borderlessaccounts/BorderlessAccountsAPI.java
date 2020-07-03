@@ -6,7 +6,6 @@ import com.leeym.common.APIToken;
 import com.leeym.common.ProfileId;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 // https://api-docs.transferwise.com/#borderless-accounts
@@ -15,10 +14,9 @@ public class BorderlessAccountsAPI extends BaseAPI {
         super(stage, token);
     }
 
-    public List<BorderlessAccount> getBorderlessAccounts(ProfileId profileId) {
+    public BorderlessAccount getBorderlessAccount(ProfileId profileId) {
         String json = get("/v1/borderless-accounts?profileId=" + profileId);
-        BorderlessAccount[] borderlessAccounts = gson.fromJson(json, BorderlessAccount[].class);
-        return Arrays.stream(borderlessAccounts).collect(Collectors.toList());
+        return gson.fromJson(json, BorderlessAccount[].class)[0];
     }
 
     public CurrencyPairs getCurrencyPairs() {
