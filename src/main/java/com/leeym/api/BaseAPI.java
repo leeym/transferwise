@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.leeym.common.APIToken;
 import com.leeym.common.LocalDateTypeAdapter;
+import com.leeym.common.LocalTimeTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class BaseAPI {
     protected final Gson gson;
@@ -30,6 +32,7 @@ public class BaseAPI {
         this.token = token;
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeTypeAdapter())
                 .create();
     }
 
