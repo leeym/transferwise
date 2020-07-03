@@ -1,6 +1,7 @@
 package com.leeym.api.exchangerates;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Currency;
 
 // https://api-docs.transferwise.com/#exchange-rates
@@ -8,7 +9,7 @@ public class Rate {
     private BigDecimal rate;
     private Currency source;
     private Currency target;
-    private String time;
+    private OffsetDateTime time;
 
     @Override
     public String toString() {
@@ -32,7 +33,7 @@ public class Rate {
         return target;
     }
 
-    public String getTime() {
+    public OffsetDateTime getTime() {
         return time;
     }
 }
