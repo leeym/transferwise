@@ -1,5 +1,6 @@
 package com.leeym.api;
 
+import com.leeym.api.exchangerates.Interval;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesAPI;
 import com.leeym.api.exchangerates.RatesRequest;
@@ -24,5 +25,18 @@ class RatesAPITest extends BaseAPITest {
         Assertions.assertEquals(Currency.getInstance("USD"), rate.getSource());
         Assertions.assertEquals(Currency.getInstance("EUR"), rate.getTarget());
         System.err.println(rates);
+    }
+
+    @Disabled
+    @Test
+    public void testRatesGroupedByDate() {
+        RatesRequest request = new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"), "2020-06-01", "2020-06-30", Interval.day);
+        List<Rate> rates = api.getRates(request);
+        Assertions.assertEquals(30, rates.size());
+        for (Rate rate : rates) {
+            Assertions.assertEquals(Currency.getInstance("USD"), rate.getSource());
+            Assertions.assertEquals(Currency.getInstance("EUR"), rate.getTarget());
+            System.err.println(rate);
+        }
     }
 }

@@ -17,6 +17,18 @@ public class RatesRequest extends APIRequest {
         this.target = target;
     }
 
+    public RatesRequest(Currency source, Currency target, String time) {
+        this(source, target);
+        this.time = time;
+    }
+
+    public RatesRequest(Currency source, Currency target, String from, String to, Interval group) {
+        this(source, target);
+        this.from = from;
+        this.to = to;
+        this.group = group;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
