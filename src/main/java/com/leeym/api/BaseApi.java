@@ -5,20 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.leeym.common.ApiToken;
-import com.leeym.common.LocalDateTimeTypeAdapter;
-import com.leeym.common.LocalDateTypeAdapter;
-import com.leeym.common.LocalTimeTypeAdapter;
-import com.leeym.common.OffsetDateTimeTypeAdapter;
+import com.leeym.common.JavaTimeTypeAdapterFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 
 import static com.leeym.api.Stage.SANDBOX;
 
@@ -39,10 +32,7 @@ public class BaseApi {
                 .build();
         this.token = token;
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-                .registerTypeAdapter(LocalTime.class, new LocalTimeTypeAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
-                .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeTypeAdapter())
+                .registerTypeAdapterFactory(new JavaTimeTypeAdapterFactory())
                 .setPrettyPrinting()
                 .create();
     }
