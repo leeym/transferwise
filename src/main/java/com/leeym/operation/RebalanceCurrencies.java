@@ -38,19 +38,23 @@ public class RebalanceCurrencies implements Callable<String> {
         BorderlessAccount account = borderlessAccountsAPI.getBorderlessAccount(profileId);
         List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
+        Amount existingUsdEquivalentAmount = new Amount(USD, BigDecimal.ZERO);
         for (Amount sourceAmount : amounts) {
+            final Amount targetAmount;
             if (sourceAmount.getCurrency().equals(USD)) {
-                map.put(sourceAmount, sourceAmount);
+                targetAmount = sourceAmount;
             } else {
                 Currency sourceCurrency = sourceAmount.getCurrency();
                 BigDecimal sourceValue = sourceAmount.getValue();
                 Rate rate = Iterables.getOnlyElement(ratesAPI.getRates(new RatesRequest(sourceCurrency, USD)));
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
-                Amount targetAmount = new Amount(USD, targetValue);
-                map.put(sourceAmount, targetAmount);
+                targetAmount = new Amount(USD, targetValue);
             }
-            System.err.println(Arrays.asList(sourceAmount, map.get(sourceAmount)));
+            map.put(sourceAmount, targetAmount);
+            existingUsdEquivalentAmount = existingUsdEquivalentAmount.add(targetAmount);
+            System.err.println(Arrays.asList(sourceAmount, targetAmount));
         }
+        System.err.println(existingUsdEquivalentAmount);
         return map.toString();
     }
 }
