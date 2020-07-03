@@ -1,22 +1,29 @@
 package com.leeym.api.userprofiles;
 
+import com.leeym.common.ProfileId;
+
 import java.time.LocalDate;
 
 public class Profile {
-    private String id;
-    private String type;
+    private ProfileId id;
+    private Type type;
     private Details details;
 
-    public String getId() {
+    public ProfileId getId() {
         return id;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     public Details getDetails() {
         return details;
+    }
+
+    public enum Type {
+        personal,
+        business,
     }
 
     @Override

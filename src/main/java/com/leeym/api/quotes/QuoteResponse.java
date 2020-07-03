@@ -1,5 +1,6 @@
 package com.leeym.api.quotes;
 
+import com.leeym.api.userprofiles.Profile;
 import com.leeym.api.users.UserId;
 import com.leeym.common.ProfileId;
 import com.leeym.common.QuoteId;
@@ -23,7 +24,7 @@ public class QuoteResponse {
     OffsetDateTime deliveryEstimate;
     BigDecimal fee;
     FeeDetails feeDetails;
-    String[] allowedProfileTypes;
+    Profile.Type[] allowedProfileTypes;
     Boolean guaranteedTargetAmount;
     Boolean ofSourceAmount;
 
