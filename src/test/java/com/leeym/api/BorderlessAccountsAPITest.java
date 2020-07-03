@@ -1,9 +1,9 @@
 package com.leeym.api;
 
+import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
 import com.leeym.api.borderlessaccounts.CurrencyPairs;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +20,7 @@ class BorderlessAccountsAPITest extends BaseAPITest {
     @Test
     public void testBorderlessAccounts() {
         List<BorderlessAccount> borderlessAccounts = api.getBorderlessAccounts(REAL_SANDBOX_PERSONAL_PROFILE_ID);
-        Assertions.assertEquals(1, borderlessAccounts.size());
-        BorderlessAccount borderlessAccount = borderlessAccounts.get(0);
+        BorderlessAccount borderlessAccount = Iterables.getOnlyElement(borderlessAccounts);
         System.err.println(borderlessAccount);
     }
 

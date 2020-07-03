@@ -4,7 +4,7 @@ public class Balance {
     private Amount amount;
     private Amount reservedAmount;
     private BankDetails bankDetails;
-    private String balanceType;
+    private BalanceType balanceType;
     private String currency;
 
     public Amount getAmount() {
