@@ -16,9 +16,11 @@ import java.time.ZoneOffset;
 class OffsetDateTimeTypeAdapterTest {
 
     private final OffsetDateTimeTypeAdapter adapter = new OffsetDateTimeTypeAdapter();
-    private final OffsetDateTime localDateTime =
-            OffsetDateTime.of(LocalDate.of(1977, 1, 12), LocalTime.of(12, 34, 56, 789000000), ZoneOffset.UTC);
-    private final String value = "\"1977-01-12T12:34:56.789Z\"";
+    private final OffsetDateTime localDateTime = OffsetDateTime.of(
+            LocalDate.of(2020, 7, 3),
+            LocalTime.of(13, 27, 58, 0),
+            ZoneOffset.UTC);
+    private final String value = "\"2020-07-03T13:27:58+0000\"";
 
     @Test
     void write() throws IOException {
