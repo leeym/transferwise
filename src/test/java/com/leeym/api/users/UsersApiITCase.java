@@ -1,12 +1,13 @@
 package com.leeym.api.users;
 
 import com.leeym.api.BaseApiITCase;
-import com.leeym.api.Stage;
 import org.junit.jupiter.api.Test;
+
+import static com.leeym.api.Stage.SANDBOX;
 
 class UsersApiITCase extends BaseApiITCase {
 
-    private final UsersApi api = new UsersApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final UsersApi api = new UsersApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     void getMe() {

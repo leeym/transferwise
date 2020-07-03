@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
+import static com.leeym.api.Stage.SANDBOX;
+
 public class BaseApi {
     protected final Gson gson;
     private final Stage stage;
@@ -46,7 +48,7 @@ public class BaseApi {
     }
 
     protected String getUriPrefix() {
-        if (stage.equals(Stage.SANDBOX)) {
+        if (stage.equals(SANDBOX)) {
             return "https://api.sandbox.transferwise.tech";
         }
         throw new UnsupportedOperationException("Not ready to hit production");

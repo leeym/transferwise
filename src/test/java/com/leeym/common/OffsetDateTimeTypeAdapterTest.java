@@ -2,7 +2,6 @@ package com.leeym.common;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OffsetDateTimeTypeAdapterTest {
 
@@ -26,11 +27,11 @@ class OffsetDateTimeTypeAdapterTest {
     void write() throws IOException {
         StringWriter sw = new StringWriter();
         adapter.write(new JsonWriter(sw), localDateTime);
-        Assertions.assertEquals(value, sw.toString());
+        assertEquals(value, sw.toString());
     }
 
     @Test
     void read() throws IOException {
-        Assertions.assertEquals(localDateTime, adapter.read(new JsonReader(new StringReader(value))));
+        assertEquals(localDateTime, adapter.read(new JsonReader(new StringReader(value))));
     }
 }

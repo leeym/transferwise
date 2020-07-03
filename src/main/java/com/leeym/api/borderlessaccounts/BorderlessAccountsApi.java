@@ -15,9 +15,4 @@ public class BorderlessAccountsApi extends BaseApi {
         String json = get("/v1/borderless-accounts?profileId=" + profileId);
         return gson.fromJson(json, BorderlessAccount[].class)[0];
     }
-
-    public CurrencyPairs getCurrencyPairs() {
-        String json = get("/v1/currency-pairs");
-        return gson.fromJson(json, CurrencyPairs.class);
-    }
 }

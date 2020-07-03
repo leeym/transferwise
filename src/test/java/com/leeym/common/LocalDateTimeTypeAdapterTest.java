@@ -2,13 +2,14 @@ package com.leeym.common;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LocalDateTimeTypeAdapterTest {
 
@@ -20,11 +21,11 @@ class LocalDateTimeTypeAdapterTest {
     void write() throws IOException {
         StringWriter sw = new StringWriter();
         adapter.write(new JsonWriter(sw), localDateTime);
-        Assertions.assertEquals(value, sw.toString());
+        assertEquals(value, sw.toString());
     }
 
     @Test
     void read() throws IOException {
-        Assertions.assertEquals(localDateTime, adapter.read(new JsonReader(new StringReader(value))));
+        assertEquals(localDateTime, adapter.read(new JsonReader(new StringReader(value))));
     }
 }
