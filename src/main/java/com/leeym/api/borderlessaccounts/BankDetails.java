@@ -1,8 +1,10 @@
 package com.leeym.api.borderlessaccounts;
 
+import java.util.Currency;
+
 public class BankDetails {
     private String id;
-    private String currency;
+    private Currency currency;
     private String bankCode;
     private String accountNumber;
     private String swift;

@@ -1,11 +1,13 @@
 package com.leeym.api.borderlessaccounts;
 
+import java.util.Currency;
+
 public class Balance {
     private Amount amount;
     private Amount reservedAmount;
     private BankDetails bankDetails;
     private BalanceType balanceType;
-    private String currency;
+    private Currency currency;
 
     public Amount getAmount() {
         return amount;
