@@ -1,5 +1,6 @@
 package com.leeym.api.userprofiles;
 
+import com.leeym.common.PhoneNumber;
 import com.leeym.common.ProfileId;
 
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public class Profile {
         private String firstName;
         private String lastName;
         private LocalDate dateOfBirth;
-        private String phoneNumber;
+        private PhoneNumber phoneNumber;
         private String avatar;
         private String occupation;
         private String primaryAddress;
@@ -111,7 +112,7 @@ public class Profile {
             return occupation;
         }
 
-        public String getPhoneNumber() {
+        public PhoneNumber getPhoneNumber() {
             return phoneNumber;
         }
 

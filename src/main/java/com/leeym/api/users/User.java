@@ -1,5 +1,7 @@
 package com.leeym.api.users;
 
+import com.leeym.common.PhoneNumber;
+
 import java.time.LocalDate;
 
 /**
@@ -53,7 +55,7 @@ public class User {
     private static class Details {
         String firstName;
         String lastName;
-        String phoneNumber;
+        PhoneNumber phoneNumber;
         String occupation;
         Address address;
 
