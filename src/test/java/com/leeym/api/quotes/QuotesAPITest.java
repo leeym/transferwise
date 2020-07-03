@@ -16,7 +16,9 @@ class QuotesAPITest extends BaseAPITest {
     @Disabled
     @Test
     public void testCreateQuote() {
-        QuoteRequest request = new QuoteRequest(REAL_SANDBOX_PERSONAL_PROFILE_ID, Currency.getInstance("EUR"), Currency.getInstance("GBP"), new BigDecimal(600), Type.BALANCE_CONVERSION);
+        QuoteRequest request =
+                new QuoteRequest(REAL_SANDBOX_PERSONAL_PROFILE_ID, Currency.getInstance("EUR"),
+                        Currency.getInstance("GBP"), new BigDecimal(600), Type.BALANCE_CONVERSION);
         QuoteResponse response = api.createQuote(request);
         Assertions.assertEquals(REAL_SANDBOX_PERSONAL_PROFILE_ID.toString(), response.profile);
         Assertions.assertEquals("EUR", response.source.getCurrencyCode());

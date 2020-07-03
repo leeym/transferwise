@@ -12,8 +12,10 @@ public abstract class FormattedString {
         if (value.isEmpty()) {
             throw new IllegalArgumentException(getClass().getSimpleName() + " can't be empty");
         }
-        if (!value.matches(format()))
-            throw new IllegalArgumentException(getClass().getSimpleName() + " [" + value + "] doesn't match [" + format() + "]");
+        if (!value.matches(format())) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + " [" + value +
+                    "] doesn't match [" + format() + "]");
+        }
         this.value = value;
     }
 
@@ -26,8 +28,12 @@ public abstract class FormattedString {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FormattedString that = (FormattedString) o;
         return this.value.equals(that.value);
     }

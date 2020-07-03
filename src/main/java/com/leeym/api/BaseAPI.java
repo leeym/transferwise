@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Map;
 
 public class BaseAPI {
     private final Stage stage;
@@ -16,8 +15,10 @@ public class BaseAPI {
     private final HttpClient client;
 
     public BaseAPI(Stage stage, APIToken token) {
-        if (!stage.equals(token.getStage()))
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + ".stage [" + stage + "] doesn't match " + token.getClass().getSimpleName() + ".stage [" + token.getStage() + "]");
+        if (!stage.equals(token.getStage())) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + ".stage [" + stage +
+                    "] doesn't match " + token.getClass().getSimpleName() + ".stage [" + token.getStage() + "]");
+        }
         this.stage = stage;
         this.client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
@@ -26,7 +27,9 @@ public class BaseAPI {
     }
 
     protected String getUriPrefix() {
-        if (stage.equals(Stage.SANDBOX)) return "https://api.sandbox.transferwise.tech";
+        if (stage.equals(Stage.SANDBOX)) {
+            return "https://api.sandbox.transferwise.tech";
+        }
         throw new UnsupportedOperationException("Not ready to hit production");
     }
 

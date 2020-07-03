@@ -3,7 +3,9 @@ package com.leeym.common;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.*;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 class TimestampTest {
 
@@ -22,7 +24,8 @@ class TimestampTest {
     @Test
     public void testInvalid() {
         Exception e = Assertions.assertThrows(IllegalArgumentException.class, () -> new Timestamp("foobar"));
-        Assertions.assertEquals("Timestamp [foobar] doesn't match [^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$]", e.getMessage());
+        Assertions.assertEquals("Timestamp [foobar] doesn't match [^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\" +
+                ".\\d{3}Z$]", e.getMessage());
     }
 
     @Test

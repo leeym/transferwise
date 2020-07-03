@@ -1,9 +1,5 @@
 package com.leeym.api.quotes;
 
-import com.leeym.common.ProfileId;
-import com.leeym.common.QuoteId;
-import com.leeym.common.Timestamp;
-
 import java.math.BigDecimal;
 import java.util.Currency;
 

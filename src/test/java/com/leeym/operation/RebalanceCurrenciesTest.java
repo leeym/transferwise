@@ -1,9 +1,9 @@
 package com.leeym.operation;
 
 import com.leeym.api.BaseAPITest;
+import com.leeym.api.Stage;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
 import com.leeym.api.exchangerates.RatesAPI;
-import com.leeym.api.Stage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,8 @@ class RebalanceCurrenciesTest extends BaseAPITest {
     @Disabled
     @Test
     public void testCall() {
-        RebalanceCurrencies rebalanceCurrencies = new RebalanceCurrencies(borderlessAccountsAPI, ratesAPI, REAL_SANDBOX_PERSONAL_PROFILE_ID);
+        RebalanceCurrencies rebalanceCurrencies =
+                new RebalanceCurrencies(borderlessAccountsAPI, ratesAPI, REAL_SANDBOX_PERSONAL_PROFILE_ID);
         rebalanceCurrencies.call();
     }
 }

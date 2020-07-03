@@ -24,7 +24,8 @@ public class APITokenTest {
     @Test
     public void testInvalid() {
         Exception e = Assertions.assertThrows(IllegalArgumentException.class, () -> new APIToken("foobar", SANDBOX));
-        Assertions.assertEquals("APIToken [foobar] doesn't match [^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$]", e.getMessage());
+        Assertions.assertEquals("APIToken [foobar] doesn't match [^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$]",
+                e.getMessage());
     }
 
     @Test

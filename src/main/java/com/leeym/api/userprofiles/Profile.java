@@ -1,7 +1,5 @@
 package com.leeym.api.userprofiles;
 
-import com.leeym.common.ProfileId;
-
 public class Profile {
     private String id;
     private String type;

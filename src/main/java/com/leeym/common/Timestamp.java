@@ -4,12 +4,12 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Timestamp extends FormattedString {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSX");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSX");
     private final OffsetDateTime offsetDateTime;
 
     public Timestamp(String value) {
         super(value);
-        this.offsetDateTime = OffsetDateTime.parse(value, formatter);
+        this.offsetDateTime = OffsetDateTime.parse(value, FORMATTER);
     }
 
     @Override

@@ -30,7 +30,9 @@ class RatesAPITest extends BaseAPITest {
     @Disabled
     @Test
     public void testRatesGroupedByDate() {
-        RatesRequest request = new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"), "2020-06-01", "2020-06-30", Interval.day);
+        RatesRequest request =
+                new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"), "2020-06-01",
+                        "2020-06-30", Interval.day);
         List<Rate> rates = api.getRates(request);
         Assertions.assertEquals(30, rates.size());
         for (Rate rate : rates) {
