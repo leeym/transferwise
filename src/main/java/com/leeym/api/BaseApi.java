@@ -2,7 +2,9 @@ package com.leeym.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.leeym.common.APIToken;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.leeym.common.ApiToken;
 import com.leeym.common.LocalDateTimeTypeAdapter;
 import com.leeym.common.LocalDateTypeAdapter;
 import com.leeym.common.LocalTimeTypeAdapter;
@@ -18,13 +20,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
-public class BaseAPI {
+public class BaseApi {
     protected final Gson gson;
     private final Stage stage;
-    private final APIToken token;
+    private final ApiToken token;
     private final HttpClient client;
 
-    public BaseAPI(Stage stage, APIToken token) {
+    public BaseApi(Stage stage, ApiToken token) {
         if (!stage.equals(token.getStage())) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ".stage [" + stage +
                     "] doesn't match " + token.getClass().getSimpleName() + ".stage [" + token.getStage() + "]");
@@ -52,40 +54,50 @@ public class BaseAPI {
 
     protected String get(String path) {
         URI uri = URI.create(getUriPrefix() + path);
+        System.err.println(">>> GET " + uri);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .build();
-        System.err.println(">>> GET " + uri);
         final String body;
         try {
             body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.err.println("<<< " + gson.toJson(body));
+        JsonElement jsonElement = JsonParser.parseString(body);
+        if (jsonElement.isJsonObject()) {
+            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+        } else if (jsonElement.isJsonArray()) {
+            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+        }
         return body;
     }
 
     protected String post(String path, Object object) {
         URI uri = URI.create(getUriPrefix() + path);
+        System.err.println(">>> POST " + uri);
         String json = gson.toJson(object);
+        System.err.println(">>> " + json);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(json))
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .build();
-        System.err.println(">>> POST " + uri);
-        System.err.println(">>> " + json);
         final String body;
         try {
             body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.err.println("<<< " + gson.toJson(body));
+        JsonElement jsonElement = JsonParser.parseString(body);
+        if (jsonElement.isJsonObject()) {
+            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+        } else if (jsonElement.isJsonArray()) {
+            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+        }
         return body;
     }
 }

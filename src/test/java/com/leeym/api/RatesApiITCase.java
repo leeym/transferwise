@@ -1,8 +1,9 @@
 package com.leeym.api;
 
+import com.google.common.collect.Iterables;
 import com.leeym.api.exchangerates.Interval;
 import com.leeym.api.exchangerates.Rate;
-import com.leeym.api.exchangerates.RatesAPI;
+import com.leeym.api.exchangerates.RatesApi;
 import com.leeym.api.exchangerates.RatesRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,17 +13,15 @@ import java.util.List;
 
 class RatesApiITCase extends BaseApiITCase {
 
-    private final RatesAPI api = new RatesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final RatesApi api = new RatesApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     public void testRate() {
         RatesRequest request = new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"));
-        List<Rate> rates = api.getRates(request);
-        Assertions.assertEquals(1, rates.size());
-        Rate rate = rates.get(0);
+        Rate rate = Iterables.getOnlyElement(api.getRates(request));
         Assertions.assertEquals(Currency.getInstance("USD"), rate.getSource());
         Assertions.assertEquals(Currency.getInstance("EUR"), rate.getTarget());
-        System.err.println(rates);
+        System.err.println(rate);
     }
 
     @Test

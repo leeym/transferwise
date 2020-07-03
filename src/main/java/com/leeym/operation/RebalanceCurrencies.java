@@ -3,9 +3,9 @@ package com.leeym.operation;
 import com.leeym.api.borderlessaccounts.Amount;
 import com.leeym.api.borderlessaccounts.Balance;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
-import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
+import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.exchangerates.Rate;
-import com.leeym.api.exchangerates.RatesAPI;
+import com.leeym.api.exchangerates.RatesApi;
 import com.leeym.api.exchangerates.RatesRequest;
 import com.leeym.common.ProfileId;
 
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 public class RebalanceCurrencies implements Callable<String> {
 
-    private final BorderlessAccountsAPI borderlessAccountsAPI;
-    private final RatesAPI ratesAPI;
+    private final BorderlessAccountsApi borderlessAccountsAPI;
+    private final RatesApi ratesAPI;
     private final ProfileId profileId;
 
-    public RebalanceCurrencies(BorderlessAccountsAPI borderlessAccountsAPI, RatesAPI ratesAPI, ProfileId profileId) {
+    public RebalanceCurrencies(BorderlessAccountsApi borderlessAccountsAPI, RatesApi ratesAPI, ProfileId profileId) {
         this.borderlessAccountsAPI = borderlessAccountsAPI;
         this.ratesAPI = ratesAPI;
         this.profileId = profileId;

@@ -1,7 +1,7 @@
 package com.leeym.api;
 
 import com.leeym.api.userprofiles.Profile;
-import com.leeym.api.userprofiles.ProfilesAPI;
+import com.leeym.api.userprofiles.ProfilesApi;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 class ProfilesApiITCase extends BaseApiITCase {
 
-    private final ProfilesAPI api = new ProfilesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final ProfilesApi api = new ProfilesApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     public void testProfile() {

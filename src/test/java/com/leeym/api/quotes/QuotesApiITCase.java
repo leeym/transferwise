@@ -10,7 +10,7 @@ import java.util.Currency;
 
 class QuotesApiITCase extends BaseApiITCase {
 
-    private final QuotesAPI api = new QuotesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final QuotesApi api = new QuotesApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     public void testCreateQuote() {

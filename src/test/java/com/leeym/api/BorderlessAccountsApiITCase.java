@@ -1,8 +1,7 @@
 package com.leeym.api;
 
-import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
-import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
+import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.borderlessaccounts.CurrencyPairs;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -10,12 +9,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 class BorderlessAccountsApiITCase extends BaseApiITCase {
-    private final BorderlessAccountsAPI api = new BorderlessAccountsAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final BorderlessAccountsApi api = new BorderlessAccountsApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     public void testBorderlessAccounts() {

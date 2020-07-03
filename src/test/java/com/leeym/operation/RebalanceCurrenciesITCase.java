@@ -2,14 +2,14 @@ package com.leeym.operation;
 
 import com.leeym.api.BaseApiITCase;
 import com.leeym.api.Stage;
-import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
-import com.leeym.api.exchangerates.RatesAPI;
+import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
+import com.leeym.api.exchangerates.RatesApi;
 import org.junit.jupiter.api.Test;
 
 class RebalanceCurrenciesITCase extends BaseApiITCase {
 
-    BorderlessAccountsAPI borderlessAccountsAPI = new BorderlessAccountsAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
-    RatesAPI ratesAPI = new RatesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    BorderlessAccountsApi borderlessAccountsAPI = new BorderlessAccountsApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
+    RatesApi ratesAPI = new RatesApi(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
     @Test
     public void testCall() {
