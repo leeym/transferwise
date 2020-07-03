@@ -1,5 +1,7 @@
 package com.leeym.api.quotes;
 
+import com.leeym.common.ProfileId;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Currency;
@@ -14,9 +16,9 @@ public class QuoteResponse {
     BigDecimal rate;
     OffsetDateTime createdTime;
     String createdByUserId;
-    String profile;
+    ProfileId profile;
     RateType rateType;
-    String deliveryEstimate;
+    OffsetDateTime deliveryEstimate;
     BigDecimal fee;
     FeeDetails feeDetails;
     String[] allowedProfileTypes;

@@ -12,9 +12,9 @@ public class BaseApiITCase {
     protected static final ApiToken REAL_SANDBOX_API_TOKEN =
             new ApiToken(System.getenv("TRANSFERWISE_SANDBOX_API_TOKEN"), Stage.SANDBOX);
     protected static final ProfileId REAL_SANDBOX_PERSONAL_PROFILE_ID =
-            new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_PERSONAL_ID"), Stage.SANDBOX, ProfileId.Type.PERSONAL);
+            new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_PERSONAL_ID"));
     protected static final ProfileId REAL_SANDBOX_BUSINESS_PROFILE_ID =
-            new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_BUSINESS_ID"), Stage.SANDBOX, ProfileId.Type.BUSINESS);
+            new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_BUSINESS_ID"));
 
     @Test
     public void testMismatchedStage() {

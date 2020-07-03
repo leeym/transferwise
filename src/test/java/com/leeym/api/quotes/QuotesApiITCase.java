@@ -18,7 +18,7 @@ class QuotesApiITCase extends BaseApiITCase {
                 new QuoteRequest(REAL_SANDBOX_PERSONAL_PROFILE_ID, Currency.getInstance("EUR"),
                         Currency.getInstance("GBP"), new BigDecimal(600), Type.BALANCE_CONVERSION);
         QuoteResponse response = api.createQuote(request);
-        Assertions.assertEquals(REAL_SANDBOX_PERSONAL_PROFILE_ID.toString(), response.profile);
+        Assertions.assertEquals(REAL_SANDBOX_PERSONAL_PROFILE_ID, response.profile);
         Assertions.assertEquals("EUR", response.source.getCurrencyCode());
         Assertions.assertEquals("GBP", response.target.getCurrencyCode());
         Assertions.assertEquals(600, response.targetAmount.intValue());

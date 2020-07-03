@@ -3,7 +3,7 @@ package com.leeym.common;
 import java.util.Objects;
 
 public abstract class FormattedString {
-    protected final String value;
+    private final String value;
 
     public FormattedString(String value) {
         if (Objects.isNull(value)) {
