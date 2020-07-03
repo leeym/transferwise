@@ -15,19 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ProfilesApiITCase extends BaseApiITCase {
 
-    private final ProfilesApi api = new ProfilesApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final ProfilesApi api = new ProfilesApi(SANDBOX, SANDBOX_API_TOKEN);
 
     @Test
     public void testProfile() {
-        assertProfile(api.getProfile(REAL_SANDBOX_PERSONAL_PROFILE_ID), REAL_SANDBOX_PERSONAL_PROFILE_ID, personal);
+        assertProfile(api.getProfile(SANDBOX_PERSONAL_PROFILE_ID), SANDBOX_PERSONAL_PROFILE_ID, personal);
     }
 
     @Test
     public void testProfiles() {
         List<Profile> profiles = api.getProfiles();
         assertEquals(2, profiles.size());
-        assertProfile(profiles.get(0), REAL_SANDBOX_PERSONAL_PROFILE_ID, personal);
-        assertProfile(profiles.get(1), REAL_SANDBOX_BUSINESS_PROFILE_ID, business);
+        assertProfile(profiles.get(0), SANDBOX_PERSONAL_PROFILE_ID, personal);
+        assertProfile(profiles.get(1), SANDBOX_BUSINESS_PROFILE_ID, business);
     }
 
     private void assertProfile(Profile profile, ProfileId id, Profile.Type type) {

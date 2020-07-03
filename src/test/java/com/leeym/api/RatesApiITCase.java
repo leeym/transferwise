@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RatesApiITCase extends BaseApiITCase {
 
-    private final RatesApi api = new RatesApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final RatesApi api = new RatesApi(SANDBOX, SANDBOX_API_TOKEN);
 
     @Test
     public void testRate() {

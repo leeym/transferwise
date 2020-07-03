@@ -9,13 +9,13 @@ import static com.leeym.api.Stage.SANDBOX;
 
 class RebalanceCurrenciesITCase extends BaseApiITCase {
 
-    BorderlessAccountsApi borderlessAccountsAPI = new BorderlessAccountsApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
-    RatesApi ratesAPI = new RatesApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
+    BorderlessAccountsApi borderlessAccountsAPI = new BorderlessAccountsApi(SANDBOX, SANDBOX_API_TOKEN);
+    RatesApi ratesAPI = new RatesApi(SANDBOX, SANDBOX_API_TOKEN);
 
     @Test
     public void testCall() {
         RebalanceCurrencies rebalanceCurrencies =
-                new RebalanceCurrencies(borderlessAccountsAPI, ratesAPI, REAL_SANDBOX_PERSONAL_PROFILE_ID);
+                new RebalanceCurrencies(borderlessAccountsAPI, ratesAPI, SANDBOX_PERSONAL_PROFILE_ID);
         rebalanceCurrencies.call();
     }
 }

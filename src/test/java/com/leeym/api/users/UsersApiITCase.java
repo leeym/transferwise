@@ -7,7 +7,7 @@ import static com.leeym.api.Stage.SANDBOX;
 
 class UsersApiITCase extends BaseApiITCase {
 
-    private final UsersApi api = new UsersApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final UsersApi api = new UsersApi(SANDBOX, SANDBOX_API_TOKEN);
 
     @Test
     void getMe() {
@@ -16,6 +16,6 @@ class UsersApiITCase extends BaseApiITCase {
 
     @Test
     void getUser() {
-        System.err.println(api.getUser(REAL_SANDBOX_USER_ID));
+        System.err.println(api.getUser(SANDBOX_USER_ID));
     }
 }

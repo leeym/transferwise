@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QuotesApiITCase extends BaseApiITCase {
 
-    private final QuotesApi api = new QuotesApi(SANDBOX, REAL_SANDBOX_API_TOKEN);
+    private final QuotesApi api = new QuotesApi(SANDBOX, SANDBOX_API_TOKEN);
 
     @Test
     public void testCreateQuote() {
         BigDecimal amount = new BigDecimal("600");
-        QuoteRequest request = new QuoteRequest(REAL_SANDBOX_PERSONAL_PROFILE_ID, EUR, GBP, amount, BALANCE_CONVERSION);
+        QuoteRequest request = new QuoteRequest(SANDBOX_PERSONAL_PROFILE_ID, EUR, GBP, amount, BALANCE_CONVERSION);
         QuoteResponse response = api.createQuote(request);
-        assertEquals(REAL_SANDBOX_PERSONAL_PROFILE_ID, response.profile);
+        assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.profile);
         assertEquals(EUR, response.source);
         assertEquals(GBP, response.target);
         assertEquals(amount.longValue(), response.targetAmount.longValue());
