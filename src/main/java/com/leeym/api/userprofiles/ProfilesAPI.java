@@ -1,6 +1,5 @@
 package com.leeym.api.userprofiles;
 
-import com.google.gson.Gson;
 import com.leeym.api.BaseAPI;
 import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
@@ -20,12 +19,12 @@ public class ProfilesAPI extends BaseAPI {
     // https://api-docs.transferwise.com/#user-profiles-list
     public List<Profile> getProfiles() {
         String json = get("/v1/profiles");
-        Profile[] profiles = new Gson().fromJson(json, Profile[].class);
+        Profile[] profiles = gson.fromJson(json, Profile[].class);
         return Arrays.stream(profiles).collect(Collectors.toList());
     }
 
     public Profile getProfile(ProfileId profileId) {
         String json = get("/v1/profiles/" + profileId);
-        return new Gson().fromJson(json, Profile.class);
+        return gson.fromJson(json, Profile.class);
     }
 }

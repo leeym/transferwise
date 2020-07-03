@@ -1,19 +1,17 @@
 package com.leeym.api.quotes;
 
-import com.leeym.api.BaseAPITest;
+import com.leeym.api.BaseApiITCase;
 import com.leeym.api.Stage;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 
-class QuotesAPITest extends BaseAPITest {
+class QuotesApiITCase extends BaseApiITCase {
 
     private final QuotesAPI api = new QuotesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
-    @Disabled
     @Test
     public void testCreateQuote() {
         QuoteRequest request =

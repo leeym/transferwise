@@ -3,23 +3,20 @@ package com.leeym.api;
 import com.leeym.api.userprofiles.Profile;
 import com.leeym.api.userprofiles.ProfilesAPI;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class ProfilesAPITest extends BaseAPITest {
+class ProfilesApiITCase extends BaseApiITCase {
 
     private final ProfilesAPI api = new ProfilesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
-    @Disabled
     @Test
     public void testProfile() {
         Profile profile = api.getProfile(REAL_SANDBOX_PERSONAL_PROFILE_ID);
         Assertions.assertEquals(REAL_SANDBOX_PERSONAL_PROFILE_ID.toString(), profile.getId());
     }
 
-    @Disabled
     @Test
     public void testProfiles() {
         List<Profile> profiles = api.getProfiles();

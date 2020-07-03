@@ -5,17 +5,15 @@ import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesAPI;
 import com.leeym.api.exchangerates.RatesRequest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Currency;
 import java.util.List;
 
-class RatesAPITest extends BaseAPITest {
+class RatesApiITCase extends BaseApiITCase {
 
     private final RatesAPI api = new RatesAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
-    @Disabled
     @Test
     public void testRate() {
         RatesRequest request = new RatesRequest(Currency.getInstance("USD"), Currency.getInstance("EUR"));
@@ -27,7 +25,6 @@ class RatesAPITest extends BaseAPITest {
         System.err.println(rates);
     }
 
-    @Disabled
     @Test
     public void testRatesGroupedByDate() {
         RatesRequest request =

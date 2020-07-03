@@ -5,7 +5,7 @@ import com.leeym.common.ProfileId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class BaseAPITest {
+public class BaseApiITCase {
 
     protected static final APIToken FAKE_PRODUCTION_API_TOKEN =
             new APIToken("12345678-1234-1234-1234-123456789012", Stage.PRODUCTION);

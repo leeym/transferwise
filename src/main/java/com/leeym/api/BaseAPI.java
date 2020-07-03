@@ -1,15 +1,19 @@
 package com.leeym.api;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.leeym.common.APIToken;
+import com.leeym.common.LocalDateTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 
 public class BaseAPI {
+    protected final Gson gson;
     private final Stage stage;
     private final APIToken token;
     private final HttpClient client;
@@ -24,6 +28,9 @@ public class BaseAPI {
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
         this.token = token;
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .create();
     }
 
     protected String getUriPrefix() {
@@ -40,29 +47,35 @@ public class BaseAPI {
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .build();
+        System.err.println(">>> GET " + uri);
+        final String body;
         try {
-            System.err.println("GET " + uri);
-            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.err.println("<<< " + body);
+        return body;
     }
 
     protected String post(String path, Object object) {
         URI uri = URI.create(getUriPrefix() + path);
-        String json = new Gson().toJson(object);
+        String json = gson.toJson(object);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(json))
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .build();
-        System.err.println("POST " + uri);
-        System.err.println(json);
+        System.err.println(">>> POST " + uri);
+        System.err.println(">>> " + json);
+        final String body;
         try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.err.println("<<< " + body);
+        return body;
     }
 }

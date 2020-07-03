@@ -1,6 +1,5 @@
 package com.leeym.api.exchangerates;
 
-import com.google.gson.Gson;
 import com.leeym.api.BaseAPI;
 import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
@@ -20,7 +19,7 @@ public class RatesAPI extends BaseAPI {
         Objects.requireNonNull(request);
         String query = request.toQueryString();
         String json = get("/v1/rates" + (query.isEmpty() ? "" : "?" + query));
-        Rate[] rates = new Gson().fromJson(json, Rate[].class);
+        Rate[] rates = gson.fromJson(json, Rate[].class);
         return Arrays.stream(rates).collect(Collectors.toList());
     }
 }

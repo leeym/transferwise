@@ -1,5 +1,7 @@
 package com.leeym.api.userprofiles;
 
+import java.time.LocalDate;
+
 public class Profile {
     private String id;
     private String type;
@@ -29,7 +31,7 @@ public class Profile {
     private static class Details {
         private String firstName;
         private String lastName;
-        private String dateOfBirth;
+        private LocalDate dateOfBirth;
         private String phoneNumber;
         private String avatar;
         private String occupation;
@@ -78,7 +80,7 @@ public class Profile {
             return companyType;
         }
 
-        public String getDateOfBirth() {
+        public LocalDate getDateOfBirth() {
             return dateOfBirth;
         }
 

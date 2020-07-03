@@ -1,6 +1,5 @@
 package com.leeym.api.borderlessaccounts;
 
-import com.google.gson.Gson;
 import com.leeym.api.BaseAPI;
 import com.leeym.api.Stage;
 import com.leeym.common.APIToken;
@@ -18,12 +17,12 @@ public class BorderlessAccountsAPI extends BaseAPI {
 
     public List<BorderlessAccount> getBorderlessAccounts(ProfileId profileId) {
         String json = get("/v1/borderless-accounts?profileId=" + profileId);
-        BorderlessAccount[] borderlessAccounts = new Gson().fromJson(json, BorderlessAccount[].class);
+        BorderlessAccount[] borderlessAccounts = gson.fromJson(json, BorderlessAccount[].class);
         return Arrays.stream(borderlessAccounts).collect(Collectors.toList());
     }
 
     public CurrencyPairs getCurrencyPairs() {
         String json = get("/v1/currency-pairs");
-        return new Gson().fromJson(json, CurrencyPairs.class);
+        return gson.fromJson(json, CurrencyPairs.class);
     }
 }

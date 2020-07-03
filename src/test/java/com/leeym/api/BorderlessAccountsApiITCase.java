@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsAPI;
 import com.leeym.api.borderlessaccounts.CurrencyPairs;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -13,10 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-class BorderlessAccountsAPITest extends BaseAPITest {
+class BorderlessAccountsApiITCase extends BaseApiITCase {
     private final BorderlessAccountsAPI api = new BorderlessAccountsAPI(Stage.SANDBOX, REAL_SANDBOX_API_TOKEN);
 
-    @Disabled
     @Test
     public void testBorderlessAccounts() {
         List<BorderlessAccount> borderlessAccounts = api.getBorderlessAccounts(REAL_SANDBOX_PERSONAL_PROFILE_ID);
@@ -24,7 +22,6 @@ class BorderlessAccountsAPITest extends BaseAPITest {
         System.err.println(borderlessAccount);
     }
 
-    @Disabled
     @Test
     public void testCurrencyPairs() {
         CurrencyPairs currencyPairs = api.getCurrencyPairs();
