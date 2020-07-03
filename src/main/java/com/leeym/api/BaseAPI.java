@@ -64,7 +64,7 @@ public class BaseAPI {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.err.println("<<< " + body);
+        System.err.println("<<< " + gson.toJson(body));
         return body;
     }
 
