@@ -1,5 +1,6 @@
 package com.leeym.api;
 
+import com.leeym.api.users.UserId;
 import com.leeym.common.ApiToken;
 import com.leeym.common.ProfileId;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,7 @@ public class BaseApiITCase {
             new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_PERSONAL_ID"));
     protected static final ProfileId REAL_SANDBOX_BUSINESS_PROFILE_ID =
             new ProfileId(System.getenv("TRANSFERWISE_SANDBOX_BUSINESS_ID"));
+    protected static final UserId REAL_SANDBOX_USER_ID = new UserId(System.getenv("TRANSFERWISE_SANDBOX_USER_ID"));
 
     @Test
     public void testMismatchedStage() {
