@@ -1,37 +1,14 @@
 package com.leeym.api.users;
 
+import com.leeym.common.Email;
 import com.leeym.common.PhoneNumber;
 
 import java.time.LocalDate;
 
-/**
- * {
- * "id": 101,
- * "name": "Example Person",
- * "email": "person@example.com",
- * "active": true,
- * "details": {
- * "firstName": "Example",
- * "lastName": "Person",
- * "phoneNumber": "+37111111111",
- * "occupation": "",
- * "address": {
- * "city": "Tallinn",
- * "countryCode": "EE",
- * "postCode": "11111",
- * "state": "",
- * "firstLine": "Road 123"
- * },
- * "dateOfBirth": "1977-01-01",
- * "avatar": "https://lh6.googleusercontent.com/photo.jpg",
- * "primaryAddress": 111
- * }
- * }
- */
 public class User {
     String id;
     String name;
-    String email;
+    Email email;
     Boolean active;
     Details details;
     LocalDate dateOfBirth;
