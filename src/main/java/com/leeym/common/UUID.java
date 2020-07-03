@@ -1,7 +1,7 @@
 package com.leeym.common;
 
-public abstract class UUIDString extends FormattedString {
-    public UUIDString(String value) {
+public abstract class UUID extends FormattedString {
+    public UUID(String value) {
         super(value);
     }
 

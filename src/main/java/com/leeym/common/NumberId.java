@@ -1,7 +1,7 @@
 package com.leeym.common;
 
-public abstract class NumericId extends FormattedString {
-    public NumericId(String value) {
+public abstract class NumberId extends FormattedString {
+    public NumberId(String value) {
         super(value);
     }
 

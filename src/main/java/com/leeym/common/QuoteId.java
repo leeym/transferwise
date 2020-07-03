@@ -1,15 +1,26 @@
 package com.leeym.common;
 
 import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
-@JsonAdapter(QuoteIdTypeAdapter.class)
-public class QuoteId extends FormattedString {
+import java.io.IOException;
+
+@JsonAdapter(QuoteId.TypeAdapter.class)
+public class QuoteId extends NumberId {
     public QuoteId(String value) {
         super(value);
     }
 
-    @Override
-    String format() {
-        return "^\\d+$";
+    static class TypeAdapter extends com.google.gson.TypeAdapter<QuoteId> {
+        @Override
+        public void write(JsonWriter out, QuoteId value) throws IOException {
+            out.value(value.toString());
+        }
+
+        @Override
+        public QuoteId read(JsonReader in) throws IOException {
+            return new QuoteId(in.nextString());
+        }
     }
 }
