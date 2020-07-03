@@ -9,12 +9,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.LocalTime;
-import java.time.Month;
 
 class LocalTimeTypeAdapterTest {
 
     private final LocalTimeTypeAdapter adapter = new LocalTimeTypeAdapter();
-    private final LocalTime localTime = LocalTime.of(12,34,56);
+    private final LocalTime localTime = LocalTime.of(12, 34, 56);
     private final String value = "\"12:34:56\"";
 
     @Test
