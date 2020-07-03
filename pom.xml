@@ -31,7 +31,6 @@
         <executions>
           <execution>
             <id>analyze</id>
-            <phase>validate</phase>
             <goals>
               <goal>analyze-only</goal>
             </goals>
