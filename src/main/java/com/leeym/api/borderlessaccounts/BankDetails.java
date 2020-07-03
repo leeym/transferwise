@@ -1,6 +1,7 @@
 package com.leeym.api.borderlessaccounts;
 
 import java.util.Currency;
+import java.util.Locale;
 
 public class BankDetails {
     private String id;
@@ -33,7 +34,7 @@ public class BankDetails {
         private String addressSecondLine;
         private String postCode;
         private String city;
-        private String country;
+        private Locale.IsoCountryCode country;
         private String stateCode;
 
         @Override

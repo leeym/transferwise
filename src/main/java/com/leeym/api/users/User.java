@@ -4,6 +4,7 @@ import com.leeym.common.Email;
 import com.leeym.common.PhoneNumber;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 public class User {
     String id;
@@ -49,7 +50,7 @@ public class User {
 
         private static class Address {
             String city;
-            String countryCode;
+            Locale.IsoCountryCode countryCode;
             String postCode;
             String state;
             String firstLine;
