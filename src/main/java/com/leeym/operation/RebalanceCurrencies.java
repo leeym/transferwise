@@ -1,5 +1,6 @@
 package com.leeym.operation;
 
+import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.Amount;
 import com.leeym.api.borderlessaccounts.Balance;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+
+import static com.leeym.api.Currencies.USD;
 
 public class RebalanceCurrencies implements Callable<String> {
 
@@ -36,15 +39,14 @@ public class RebalanceCurrencies implements Callable<String> {
         List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         for (Amount sourceAmount : amounts) {
-            if (sourceAmount.getCurrency().equals(Currency.getInstance("USD"))) {
+            if (sourceAmount.getCurrency().equals(USD)) {
                 map.put(sourceAmount, sourceAmount);
             } else {
                 Currency sourceCurrency = sourceAmount.getCurrency();
-                Currency targetCurrency = Currency.getInstance("USD");
                 BigDecimal sourceValue = sourceAmount.getValue();
-                Rate rate = ratesAPI.getRates(new RatesRequest(sourceCurrency, targetCurrency)).get(0);
+                Rate rate = Iterables.getOnlyElement(ratesAPI.getRates(new RatesRequest(sourceCurrency, USD)));
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
-                Amount targetAmount = new Amount(Currency.getInstance("USD"), targetValue);
+                Amount targetAmount = new Amount(USD, targetValue);
                 map.put(sourceAmount, targetAmount);
             }
             System.err.println(Arrays.asList(sourceAmount, map.get(sourceAmount)));
