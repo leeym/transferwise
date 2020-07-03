@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static com.leeym.api.Currencies.EUR;
+import static com.leeym.api.Currencies.JPY;
 import static com.leeym.api.Currencies.USD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +25,14 @@ class AmountTest {
         assertEquals(USD, amount.getCurrency());
         assertEquals(12345.67890, amount.getValue().doubleValue());
         assertEquals("Amount{currency='USD', value=12345.68}", amount.toString());
+    }
+
+    @Test
+    public void testJPY() {
+        Amount amount = new Amount(JPY, new BigDecimal("12345.67890"));
+        assertEquals(JPY, amount.getCurrency());
+        assertEquals(12345.67890, amount.getValue().doubleValue());
+        assertEquals("Amount{currency='JPY', value=12346}", amount.toString());
     }
 
     @Test
