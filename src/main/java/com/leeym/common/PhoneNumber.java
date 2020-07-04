@@ -13,7 +13,7 @@ public class PhoneNumber extends FormattedString {
     }
 
     @Override
-    String format() {
+    public String format() {
         return "^(\\+\\d{1,3}\\D?)(\\d{1,4}|\\(\\d{1,4}\\))(\\D?\\d{2,4}){2,4}?";
     }
 

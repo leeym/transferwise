@@ -2,7 +2,7 @@ package com.leeym.api;
 
 import com.leeym.api.userprofiles.Profile;
 import com.leeym.api.userprofiles.ProfilesApi;
-import com.leeym.common.ProfileId;
+import com.leeym.api.userprofiles.ProfileId;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

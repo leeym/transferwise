@@ -2,8 +2,7 @@ package com.leeym.api.quotes;
 
 import com.leeym.api.userprofiles.Profile;
 import com.leeym.api.users.UserId;
-import com.leeym.common.ProfileId;
-import com.leeym.common.QuoteId;
+import com.leeym.api.userprofiles.ProfileId;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

@@ -1,6 +1,5 @@
 package com.leeym.api.users;
 
-import com.leeym.common.Email;
 import com.leeym.common.PhoneNumber;
 
 import java.time.LocalDate;

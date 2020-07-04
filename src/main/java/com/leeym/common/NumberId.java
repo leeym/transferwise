@@ -6,7 +6,7 @@ public abstract class NumberId extends FormattedString {
     }
 
     @Override
-    String format() {
+    public String format() {
         return "^\\d+$";
     }
 }

@@ -1,8 +1,9 @@
-package com.leeym.common;
+package com.leeym.api.borderlessaccounts;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.leeym.common.NumberId;
 
 import java.io.IOException;
 

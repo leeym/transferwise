@@ -2,7 +2,7 @@ package com.leeym.api;
 
 import com.leeym.api.users.UserId;
 import com.leeym.common.ApiToken;
-import com.leeym.common.ProfileId;
+import com.leeym.api.userprofiles.ProfileId;
 import org.junit.jupiter.api.Test;
 
 import static com.leeym.common.BaseUrl.LIVE_BASEURL;

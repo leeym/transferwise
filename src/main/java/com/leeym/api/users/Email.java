@@ -1,8 +1,9 @@
-package com.leeym.common;
+package com.leeym.api.users;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.leeym.common.FormattedString;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ public class Email extends FormattedString {
     }
 
     @Override
-    String format() {
+    public String format() {
         return "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     }
 

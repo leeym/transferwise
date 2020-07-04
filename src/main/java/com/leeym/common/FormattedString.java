@@ -19,7 +19,7 @@ public abstract class FormattedString {
         this.value = value;
     }
 
-    abstract String format();
+    public abstract String format();
 
     @Override
     public String toString() {

@@ -3,7 +3,7 @@ package com.leeym.api.borderlessaccounts;
 import com.leeym.api.BaseApi;
 import com.leeym.common.ApiToken;
 import com.leeym.common.BaseUrl;
-import com.leeym.common.ProfileId;
+import com.leeym.api.userprofiles.ProfileId;
 
 // https://api-docs.transferwise.com/#borderless-accounts
 public class BorderlessAccountsApi extends BaseApi {

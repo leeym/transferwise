@@ -1,9 +1,7 @@
 package com.leeym.api.borderlessaccounts;
 
 import com.leeym.common.Amount;
-import com.leeym.common.BorderlessAcountId;
-import com.leeym.common.ProfileId;
-import com.leeym.common.RecipientId;
+import com.leeym.api.userprofiles.ProfileId;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -68,7 +66,7 @@ public class BorderlessAccount {
         }
 
         static class BankDetails {
-            private String id;
+            private BankDetailsId id;
             private Currency currency;
             private String bankCode;
             private String accountNumber;

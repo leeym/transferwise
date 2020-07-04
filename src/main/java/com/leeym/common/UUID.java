@@ -6,7 +6,7 @@ public abstract class UUID extends FormattedString {
     }
 
     @Override
-    String format() {
+    public String format() {
         return "^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$";
     }
 }

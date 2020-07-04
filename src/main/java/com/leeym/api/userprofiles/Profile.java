@@ -1,7 +1,6 @@
 package com.leeym.api.userprofiles;
 
 import com.leeym.common.PhoneNumber;
-import com.leeym.common.ProfileId;
 
 import java.time.LocalDate;
 

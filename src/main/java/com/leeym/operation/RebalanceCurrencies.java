@@ -5,7 +5,7 @@ import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
 import com.leeym.common.Amount;
-import com.leeym.common.ProfileId;
+import com.leeym.api.userprofiles.ProfileId;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
