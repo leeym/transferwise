@@ -6,20 +6,26 @@ public abstract class FormattedString {
     private final String value;
 
     public FormattedString(String value) {
-        if (Objects.isNull(value)) {
-            throw new NullPointerException(getClass().getSimpleName() + " can't be null");
-        }
-        if (value.isEmpty()) {
-            throw new IllegalArgumentException(getClass().getSimpleName() + " can't be empty");
-        }
-        if (!value.matches(format())) {
-            throw new IllegalArgumentException(getClass().getSimpleName() + " [" + value +
-                    "] doesn't match [" + format() + "]");
-        }
-        this.value = value;
+        this.value = validate(value);
     }
 
-    public abstract String format();
+    public String format() {
+        return ".+";
+    }
+
+    public String validate(String string) {
+        if (Objects.isNull(string)) {
+            throw new NullPointerException(getClass().getSimpleName() + " can't be null");
+        }
+        if (string.isEmpty()) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + " can't be empty");
+        }
+        if (!string.matches(format())) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + " [" + string +
+                    "] doesn't match [" + format() + "]");
+        }
+        return string;
+    }
 
     @Override
     public String toString() {
