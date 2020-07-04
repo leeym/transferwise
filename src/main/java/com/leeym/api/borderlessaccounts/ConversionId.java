@@ -1,6 +1,5 @@
 package com.leeym.api.borderlessaccounts;
 
-import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -17,7 +16,7 @@ public class ConversionId extends NumberId {
     static class TypeAdapter extends com.google.gson.TypeAdapter<ConversionId> {
         @Override
         public void write(JsonWriter out, ConversionId value) throws IOException {
-            out.value(value.toString());
+            out.value(Long.parseLong(value.toString()));
         }
 
         @Override

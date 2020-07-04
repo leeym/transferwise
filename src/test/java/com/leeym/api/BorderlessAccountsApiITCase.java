@@ -14,4 +14,9 @@ class BorderlessAccountsApiITCase extends BaseApiITCase {
         BorderlessAccount borderlessAccount = api.getBorderlessAccount(SANDBOX_PERSONAL_PROFILE_ID);
         System.err.println(borderlessAccount);
     }
+
+    @Test
+    public void testCurrencyPairs() {
+        System.err.println(api.getCurrencyPairs());
+    }
 }

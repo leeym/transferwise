@@ -1,7 +1,7 @@
 package com.leeym.api.borderlessaccounts;
 
-import com.leeym.common.Amount;
 import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.common.Amount;
 import com.leeym.common.IBAN;
 import com.leeym.common.Swift;
 
@@ -25,6 +25,10 @@ public class BorderlessAccount {
 
     public List<Balance> getBalances() {
         return Arrays.stream(balances).collect(Collectors.toList());
+    }
+
+    public BorderlessAccountId getId() {
+        return id;
     }
 
     @Override

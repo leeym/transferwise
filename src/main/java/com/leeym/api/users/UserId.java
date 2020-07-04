@@ -16,7 +16,7 @@ public class UserId extends NumberId {
     public class TypeAdapter extends com.google.gson.TypeAdapter<UserId> {
         @Override
         public void write(JsonWriter out, UserId value) throws IOException {
-            out.value(value.toString());
+            out.value(Long.parseLong(value.toString()));
         }
 
         @Override

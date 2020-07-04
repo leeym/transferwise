@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.UUID;
 
 public class BaseApi {
     protected final Gson gson;
@@ -73,6 +74,7 @@ public class BaseApi {
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
+                .header("X-idempotence-uuid", UUID.randomUUID().toString())
                 .build();
         final String body;
         try {

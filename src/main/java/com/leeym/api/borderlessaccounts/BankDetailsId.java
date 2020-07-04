@@ -17,7 +17,7 @@ public class BankDetailsId extends NumberId {
 
         @Override
         public void write(JsonWriter out, BankDetailsId value) throws IOException {
-            out.value(value.toString());
+            out.value(Long.parseLong(value.toString()));
         }
 
         @Override

@@ -35,6 +35,26 @@ public class Amount {
         return new Amount(currency, value.subtract(that.value));
     }
 
+    public boolean isPositive() {
+        return value.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    public boolean isNegative() {
+        return value.compareTo(BigDecimal.ZERO) < 0;
+    }
+
+    public boolean isZero() {
+        return value.compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    public Amount abs() {
+        return isPositive() ? this : negate();
+    }
+
+    public Amount negate() {
+        return new Amount(currency, value.negate());
+    }
+
     @Override
     public String toString() {
         return currency.getCurrencyCode() + value.setScale(currency.getDefaultFractionDigits(), HALF_UP);

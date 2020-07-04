@@ -16,7 +16,7 @@ public class BorderlessAccountId extends NumberId {
     static class TypeAdapter extends com.google.gson.TypeAdapter<BorderlessAccountId> {
         @Override
         public void write(JsonWriter out, BorderlessAccountId value) throws IOException {
-            out.value(value.toString());
+            out.value(Long.parseLong(value.toString()));
         }
 
         @Override

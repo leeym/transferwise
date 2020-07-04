@@ -22,4 +22,9 @@ public class BorderlessAccountsApi extends BaseApi {
         String json = post("/v1/borderless-accounts/" + borderlessAccountId + "/conversions", request);
         return gson.fromJson(json, ConversionResponse.class);
     }
+
+    public CurrencyPairs getCurrencyPairs() {
+        String json = get("/v1/currency-pairs");
+        return gson.fromJson(json, CurrencyPairs.class);
+    }
 }
