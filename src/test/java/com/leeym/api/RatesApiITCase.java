@@ -39,7 +39,7 @@ class RatesApiITCase extends BaseApiITCase {
 
     @Test
     public void getRateAt() {
-        Rate rate = api.getRateAt(USD, EUR, OffsetDateTime.now(ZoneId.systemDefault()));
+        Rate rate = api.getRateAt(USD, EUR, OffsetDateTime.now(ZoneId.of("UTC")));
         assertEquals(USD, rate.getSource());
         assertEquals(EUR, rate.getTarget());
     }
