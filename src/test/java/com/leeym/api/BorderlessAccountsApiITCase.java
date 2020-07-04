@@ -10,13 +10,18 @@ class BorderlessAccountsApiITCase extends BaseApiITCase {
     private final BorderlessAccountsApi api = new BorderlessAccountsApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
-    public void testBorderlessAccounts() {
+    public void getBorderlessAccount() {
         BorderlessAccount borderlessAccount = api.getBorderlessAccount(SANDBOX_PERSONAL_PROFILE_ID);
         System.err.println(borderlessAccount);
     }
 
     @Test
-    public void testCurrencyPairs() {
+    public void getCurrencyPairs() {
         System.err.println(api.getCurrencyPairs());
+    }
+
+    @Test
+    public void getBalanceCurrencies() {
+        System.err.println(api.getBalanceCurrencies());
     }
 }
