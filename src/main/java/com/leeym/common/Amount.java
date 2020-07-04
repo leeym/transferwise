@@ -3,9 +3,10 @@ package com.leeym.common;
 import com.google.common.base.Preconditions;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
+
+import static java.math.RoundingMode.HALF_UP;
 
 public class Amount {
     private final Currency currency;
@@ -25,30 +26,18 @@ public class Amount {
     }
 
     public Amount add(Amount that) {
-        if (that.value.equals(BigDecimal.ZERO)) {
-            return this;
-        }
-        if (value.equals(BigDecimal.ZERO)) {
-            return that;
-        }
-        Preconditions.checkArgument(currency.equals(that.currency));
+        Preconditions.checkArgument(currency.equals(that.currency), "can't add " + that + " to " + this);
         return new Amount(currency, value.add(that.value));
     }
 
     public Amount subtract(Amount that) {
-        if (that.value.equals(BigDecimal.ZERO)) {
-            return this;
-        }
-        if (value.equals(BigDecimal.ZERO)) {
-            return new Amount(that.currency, that.value.negate());
-        }
-        Preconditions.checkArgument(currency.equals(that.currency));
+        Preconditions.checkArgument(currency.equals(that.currency), "Can't subtract " + that + " from " + that);
         return new Amount(currency, value.subtract(that.value));
     }
 
     @Override
     public String toString() {
-        return currency.getSymbol() + value.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_UP);
+        return currency.getCurrencyCode() + value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
     }
 
     @Override
