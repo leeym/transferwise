@@ -48,10 +48,7 @@ public class Amount {
 
     @Override
     public String toString() {
-        return "Amount{" +
-                "currency='" + this.currency.getCurrencyCode() + '\'' +
-                ", value=" + value.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_UP) +
-                '}';
+        return currency.getSymbol() + value.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_UP);
     }
 
     @Override
