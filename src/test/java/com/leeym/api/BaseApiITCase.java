@@ -5,7 +5,7 @@ import com.leeym.common.ApiToken;
 import com.leeym.common.ProfileId;
 import org.junit.jupiter.api.Test;
 
-import static com.leeym.api.Stage.PRODUCTION;
+import static com.leeym.api.Stage.LIVE;
 import static com.leeym.api.Stage.SANDBOX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class BaseApiITCase {
 
     // FAKE
-    protected static final ApiToken PRODUCTION_API_TOKEN =
-            new ApiToken("12345678-1234-1234-1234-123456789012", PRODUCTION);
+    protected static final ApiToken LIVE_API_TOKEN = new ApiToken("ApiToken-Fake-Live-Test-TransferWise", LIVE);
 
     // REAL, from ENV
     protected static final ApiToken SANDBOX_API_TOKEN =
@@ -27,13 +26,13 @@ public class BaseApiITCase {
 
     @Test
     public void testMismatchedStage() {
-        Exception e = assertThrows(IllegalArgumentException.class, () -> new BaseApi(PRODUCTION, SANDBOX_API_TOKEN));
-        assertEquals("BaseApi.stage [PRODUCTION] doesn't match ApiToken.stage [SANDBOX]", e.getMessage());
+        Exception e = assertThrows(IllegalArgumentException.class, () -> new BaseApi(LIVE, SANDBOX_API_TOKEN));
+        assertEquals("BaseApi.stage [LIVE] doesn't match ApiToken.stage [SANDBOX]", e.getMessage());
     }
 
     @Test
     public void testNoProductionYet() {
-        BaseApi api = new BaseApi(PRODUCTION, PRODUCTION_API_TOKEN);
+        BaseApi api = new BaseApi(LIVE, LIVE_API_TOKEN);
         Exception e = assertThrows(UnsupportedOperationException.class, api::getUriPrefix);
         assertEquals("Not ready to hit production", e.getMessage());
     }
