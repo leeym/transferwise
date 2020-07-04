@@ -13,8 +13,8 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BorderlessAccount {
-    private BorderlessAccountId id;
+public class Account {
+    private AccountId id;
     private ProfileId profileId;
     private RecipientId recipientId;
     private OffsetDateTime creationTime;
@@ -27,13 +27,13 @@ public class BorderlessAccount {
         return Arrays.stream(balances).collect(Collectors.toList());
     }
 
-    public BorderlessAccountId getId() {
+    public AccountId getId() {
         return id;
     }
 
     @Override
     public String toString() {
-        return "BorderlessAccount{" +
+        return "Account{" +
                 "id='" + id + '\'' +
                 ", profileId='" + profileId + '\'' +
                 ", recipientId='" + recipientId + '\'' +

@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // https://api-docs.transferwise.com/#borderless-accounts
-public class BorderlessAccountsApi extends BaseApi {
-    public BorderlessAccountsApi(BaseUrl baseUrl, ApiToken token) {
+public class AccountsApi extends BaseApi {
+    public AccountsApi(BaseUrl baseUrl, ApiToken token) {
         super(baseUrl, token);
     }
 
-    public BorderlessAccount getBorderlessAccount(ProfileId profileId) {
+    public Account getAccount(ProfileId profileId) {
         String json = get("/v1/borderless-accounts?profileId=" + profileId);
-        return gson.fromJson(json, BorderlessAccount[].class)[0];
+        return gson.fromJson(json, Account[].class)[0];
     }
 
-    public ConversionResponse executeQuoteAndConvert(BorderlessAccountId borderlessAccountId, QuoteId quoteId) {
+    public ConversionResponse executeQuoteAndConvert(AccountId accountId, QuoteId quoteId) {
         ConversionRequest request = new ConversionRequest(quoteId);
-        String json = post("/v1/borderless-accounts/" + borderlessAccountId + "/conversions", request);
+        String json = post("/v1/borderless-accounts/" + accountId + "/conversions", request);
         return gson.fromJson(json, ConversionResponse.class);
     }
 

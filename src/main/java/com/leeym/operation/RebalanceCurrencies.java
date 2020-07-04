@@ -1,9 +1,9 @@
 package com.leeym.operation;
 
 import com.google.common.collect.ImmutableMap;
-import com.leeym.api.borderlessaccounts.BorderlessAccount;
-import com.leeym.api.borderlessaccounts.BorderlessAccountId;
-import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
+import com.leeym.api.borderlessaccounts.Account;
+import com.leeym.api.borderlessaccounts.AccountId;
+import com.leeym.api.borderlessaccounts.AccountsApi;
 import com.leeym.api.borderlessaccounts.ConversionResponse;
 import com.leeym.api.borderlessaccounts.CurrencyPairs;
 import com.leeym.api.exchangerates.Rate;
@@ -31,7 +31,7 @@ import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.GBP;
 import static com.leeym.api.Currencies.JPY;
 import static com.leeym.api.Currencies.USD;
-import static com.leeym.api.borderlessaccounts.BorderlessAccount.Balance;
+import static com.leeym.api.borderlessaccounts.Account.Balance;
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
 
@@ -49,14 +49,14 @@ public class RebalanceCurrencies implements Callable<String> {
 
     private final Double idealSum = idealAllocation.values().stream().reduce(0D, Double::sum);
 
-    private final BorderlessAccountsApi borderlessAccountsApi;
+    private final AccountsApi accountsApi;
     private final RatesApi ratesApi;
     private final QuotesApi quotesApi;
     private final ProfileId profileId;
 
-    public RebalanceCurrencies(ProfileId profileId, BorderlessAccountsApi borderlessAccountsApi, RatesApi ratesApi,
+    public RebalanceCurrencies(ProfileId profileId, AccountsApi accountsApi, RatesApi ratesApi,
                                QuotesApi quotesApi) {
-        this.borderlessAccountsApi = borderlessAccountsApi;
+        this.accountsApi = accountsApi;
         this.ratesApi = ratesApi;
         this.quotesApi = quotesApi;
         this.profileId = profileId;
@@ -64,8 +64,8 @@ public class RebalanceCurrencies implements Callable<String> {
 
     @Override
     public String call() {
-        BorderlessAccount account = borderlessAccountsApi.getBorderlessAccount(profileId);
-        BorderlessAccountId accountId = account.getId();
+        Account account = accountsApi.getAccount(profileId);
+        AccountId accountId = account.getId();
         List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Set<Currency> currencies = new HashSet<>();
         currencies.addAll(idealAllocation.keySet());
@@ -112,7 +112,7 @@ public class RebalanceCurrencies implements Callable<String> {
             return orders.toString();
         }
         orders.sort(Comparator.comparing(Amount::getValue));
-        CurrencyPairs currencyPairs = borderlessAccountsApi.getCurrencyPairs();
+        CurrencyPairs currencyPairs = accountsApi.getCurrencyPairs();
         for (Amount amount : orders) {
             Currency currency = amount.getCurrency();
             BigDecimal value = amount.getValue().abs();
@@ -130,7 +130,7 @@ public class RebalanceCurrencies implements Callable<String> {
                 continue;
             }
             assert !quoteId.toString().isEmpty();
-            ConversionResponse response = borderlessAccountsApi.executeQuoteAndConvert(accountId, quoteId);
+            ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quoteId);
         }
         return orders.toString();
     }
