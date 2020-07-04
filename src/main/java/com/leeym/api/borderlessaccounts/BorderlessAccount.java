@@ -1,6 +1,7 @@
 package com.leeym.api.borderlessaccounts;
 
 import com.leeym.common.Amount;
+import com.leeym.common.BorderlessAcountId;
 import com.leeym.common.ProfileId;
 import com.leeym.common.RecipientId;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BorderlessAccount {
-    private String id;
+    private BorderlessAcountId id;
     private ProfileId profileId;
     private RecipientId recipientId;
     private OffsetDateTime creationTime;
