@@ -4,6 +4,8 @@ import com.leeym.api.BaseApiITCase;
 import org.junit.jupiter.api.Test;
 
 import static com.leeym.api.Stage.SANDBOX;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UsersApiITCase extends BaseApiITCase {
 
@@ -11,11 +13,15 @@ class UsersApiITCase extends BaseApiITCase {
 
     @Test
     void getMe() {
-        System.err.println(api.getMe());
+        User user = api.getMe();
+        assertEquals(SANDBOX_USER_ID, user.id);
+        assertTrue(user.active);
     }
 
     @Test
     void getUser() {
-        System.err.println(api.getUser(SANDBOX_USER_ID));
+        User user = api.getUser(SANDBOX_USER_ID);
+        assertEquals(SANDBOX_USER_ID, user.id);
+        assertTrue(user.active);
     }
 }

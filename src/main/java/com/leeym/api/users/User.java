@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 public class User {
-    String id;
+    UserId id;
     String name;
     Email email;
     Boolean active;
