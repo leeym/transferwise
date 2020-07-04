@@ -2,6 +2,8 @@ package com.leeym.api.borderlessaccounts;
 
 import com.leeym.common.Amount;
 import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.common.IBAN;
+import com.leeym.common.Swift;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -70,8 +72,8 @@ public class BorderlessAccount {
             private Currency currency;
             private String bankCode;
             private String accountNumber;
-            private String swift;
-            private String iban;
+            private Swift swift;
+            private IBAN iban;
             private String bankName;
             private String accountHolderName;
             private Address bankAddress;

@@ -9,11 +9,11 @@ public abstract class FormattedString {
         this.value = validate(value);
     }
 
-    public String format() {
+    String format() {
         return ".+";
     }
 
-    public String validate(String string) {
+    String validate(String string) {
         if (Objects.isNull(string)) {
             throw new NullPointerException(getClass().getSimpleName() + " can't be null");
         }

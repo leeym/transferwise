@@ -1,6 +1,5 @@
 package com.leeym.common;
 
-import com.leeym.api.users.Email;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
