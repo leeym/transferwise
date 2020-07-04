@@ -1,11 +1,9 @@
 package com.leeym.operation;
 
-import com.google.common.collect.Iterables;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
-import com.leeym.api.exchangerates.RatesRequest;
 import com.leeym.common.Amount;
 import com.leeym.common.ProfileId;
 
@@ -23,19 +21,19 @@ import static com.leeym.api.borderlessaccounts.BorderlessAccount.Balance;
 
 public class RebalanceCurrencies implements Callable<String> {
 
-    private final BorderlessAccountsApi borderlessAccountsAPI;
-    private final RatesApi ratesAPI;
+    private final BorderlessAccountsApi borderlessAccountsApi;
+    private final RatesApi ratesApi;
     private final ProfileId profileId;
 
-    public RebalanceCurrencies(BorderlessAccountsApi borderlessAccountsAPI, RatesApi ratesAPI, ProfileId profileId) {
-        this.borderlessAccountsAPI = borderlessAccountsAPI;
-        this.ratesAPI = ratesAPI;
+    public RebalanceCurrencies(BorderlessAccountsApi borderlessAccountsApi, RatesApi ratesApi, ProfileId profileId) {
+        this.borderlessAccountsApi = borderlessAccountsApi;
+        this.ratesApi = ratesApi;
         this.profileId = profileId;
     }
 
     @Override
     public String call() {
-        BorderlessAccount account = borderlessAccountsAPI.getBorderlessAccount(profileId);
+        BorderlessAccount account = borderlessAccountsApi.getBorderlessAccount(profileId);
         List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         Map<Amount, Amount> map = new HashMap<>();
         Amount existingUsdEquivalentAmount = new Amount(USD, BigDecimal.ZERO);
@@ -46,7 +44,7 @@ public class RebalanceCurrencies implements Callable<String> {
             } else {
                 Currency sourceCurrency = sourceAmount.getCurrency();
                 BigDecimal sourceValue = sourceAmount.getValue();
-                Rate rate = Iterables.getOnlyElement(ratesAPI.getRates(new RatesRequest(sourceCurrency, USD)));
+                Rate rate = ratesApi.getRateNow(sourceCurrency, USD);
                 BigDecimal targetValue = sourceValue.multiply(rate.getRate());
                 targetAmount = new Amount(USD, targetValue);
             }

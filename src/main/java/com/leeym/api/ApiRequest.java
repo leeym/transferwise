@@ -3,7 +3,7 @@ package com.leeym.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class APIRequest {
+public class ApiRequest {
     public String toQueryString() {
         StringBuilder sb = new StringBuilder();
         Field[] fields = getClass().getDeclaredFields();
