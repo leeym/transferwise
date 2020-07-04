@@ -1,14 +1,14 @@
 package com.leeym.api.users;
 
 import com.leeym.api.BaseApi;
-import com.leeym.api.Stage;
 import com.leeym.common.ApiToken;
+import com.leeym.common.BaseUrl;
 
 // https://api-docs.transferwise.com/#users
 public class UsersApi extends BaseApi {
 
-    public UsersApi(Stage stage, ApiToken token) {
-        super(stage, token);
+    public UsersApi(BaseUrl baseUrl, ApiToken token) {
+        super(baseUrl, token);
     }
 
     // https://api-docs.transferwise.com/#users-get-the-currently-logged-in-user

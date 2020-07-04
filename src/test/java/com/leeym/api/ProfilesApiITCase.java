@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.leeym.api.Stage.SANDBOX;
 import static com.leeym.api.userprofiles.Profile.Type.business;
 import static com.leeym.api.userprofiles.Profile.Type.personal;
+import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ProfilesApiITCase extends BaseApiITCase {
 
-    private final ProfilesApi api = new ProfilesApi(SANDBOX, SANDBOX_API_TOKEN);
+    private final ProfilesApi api = new ProfilesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
     public void testProfile() {

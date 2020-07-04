@@ -1,8 +1,8 @@
 package com.leeym.api.userprofiles;
 
 import com.leeym.api.BaseApi;
-import com.leeym.api.Stage;
 import com.leeym.common.ApiToken;
+import com.leeym.common.BaseUrl;
 import com.leeym.common.ProfileId;
 
 import java.util.Arrays;
@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 // https://api-docs.transferwise.com/#user-profiles
 public class ProfilesApi extends BaseApi {
 
-    public ProfilesApi(Stage stage, ApiToken token) {
-        super(stage, token);
+    public ProfilesApi(BaseUrl baseUrl, ApiToken token) {
+        super(baseUrl, token);
     }
 
     // https://api-docs.transferwise.com/#user-profiles-list

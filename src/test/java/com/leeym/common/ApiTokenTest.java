@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static com.leeym.api.Stage.SANDBOX;
+import static com.leeym.common.Stage.SANDBOX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

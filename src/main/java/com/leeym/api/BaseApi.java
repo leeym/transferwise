@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.leeym.common.ApiToken;
+import com.leeym.common.BaseUrl;
 import com.leeym.common.JavaTimeTypeAdapterFactory;
+import com.leeym.common.Stage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,20 +15,21 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static com.leeym.api.Stage.SANDBOX;
-
 public class BaseApi {
     protected final Gson gson;
-    private final Stage stage;
+    private final BaseUrl baseUrl;
     private final ApiToken token;
     private final HttpClient client;
 
-    public BaseApi(Stage stage, ApiToken token) {
-        if (!stage.equals(token.getStage())) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + ".stage [" + stage +
+    public BaseApi(BaseUrl baseUrl, ApiToken token) {
+        if (!baseUrl.getStage().equals(token.getStage())) {
+            throw new IllegalArgumentException(baseUrl.getClass().getSimpleName() + ".stage [" + baseUrl.getStage() +
                     "] doesn't match " + token.getClass().getSimpleName() + ".stage [" + token.getStage() + "]");
         }
-        this.stage = stage;
+        if (baseUrl.getStage() == Stage.LIVE) {
+            throw new UnsupportedOperationException("Not ready to hit " + baseUrl);
+        }
+        this.baseUrl = baseUrl;
         this.client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
@@ -37,15 +40,8 @@ public class BaseApi {
                 .create();
     }
 
-    protected String getUriPrefix() {
-        if (stage.equals(SANDBOX)) {
-            return "https://api.sandbox.transferwise.tech";
-        }
-        throw new UnsupportedOperationException("Not ready to hit production");
-    }
-
     protected String get(String path) {
-        URI uri = URI.create(getUriPrefix() + path);
+        URI uri = URI.create(baseUrl + path);
         System.err.println(">>> GET " + uri);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -68,7 +64,7 @@ public class BaseApi {
     }
 
     protected String post(String path, Object object) {
-        URI uri = URI.create(getUriPrefix() + path);
+        URI uri = URI.create(baseUrl + path);
         System.err.println(">>> POST " + uri);
         String json = gson.toJson(object);
         System.err.println(">>> " + json);

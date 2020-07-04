@@ -1,4 +1,4 @@
-package com.leeym.api;
+package com.leeym.common;
 
 public enum Stage {
     SANDBOX,

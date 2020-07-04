@@ -5,12 +5,13 @@ import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.exchangerates.RatesApi;
 import org.junit.jupiter.api.Test;
 
-import static com.leeym.api.Stage.SANDBOX;
+import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
+
 
 class RebalanceCurrenciesITCase extends BaseApiITCase {
 
-    BorderlessAccountsApi borderlessAccountsApi = new BorderlessAccountsApi(SANDBOX, SANDBOX_API_TOKEN);
-    RatesApi ratesApi = new RatesApi(SANDBOX, SANDBOX_API_TOKEN);
+    BorderlessAccountsApi borderlessAccountsApi = new BorderlessAccountsApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
+    RatesApi ratesApi = new RatesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
     public void testCall() {

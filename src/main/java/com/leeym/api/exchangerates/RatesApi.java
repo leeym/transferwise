@@ -2,8 +2,8 @@ package com.leeym.api.exchangerates;
 
 import com.google.common.collect.Iterables;
 import com.leeym.api.BaseApi;
-import com.leeym.api.Stage;
 import com.leeym.common.ApiToken;
+import com.leeym.common.BaseUrl;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 // https://api-docs.transferwise.com/#exchange-rates
 public class RatesApi extends BaseApi {
-    public RatesApi(Stage stage, ApiToken token) {
-        super(stage, token);
+    public RatesApi(BaseUrl baseUrl, ApiToken token) {
+        super(baseUrl, token);
     }
 
     protected List<Rate> getRates(RatesRequest request) {

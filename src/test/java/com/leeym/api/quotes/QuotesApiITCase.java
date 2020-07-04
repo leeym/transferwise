@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 
 import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.GBP;
-import static com.leeym.api.Stage.SANDBOX;
 import static com.leeym.api.quotes.Type.BALANCE_CONVERSION;
+import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QuotesApiITCase extends BaseApiITCase {
 
-    private final QuotesApi api = new QuotesApi(SANDBOX, SANDBOX_API_TOKEN);
+    private final QuotesApi api = new QuotesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
     public void testCreateQuote() {

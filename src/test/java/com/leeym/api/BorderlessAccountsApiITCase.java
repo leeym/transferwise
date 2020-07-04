@@ -4,10 +4,10 @@ import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import org.junit.jupiter.api.Test;
 
-import static com.leeym.api.Stage.SANDBOX;
+import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 
 class BorderlessAccountsApiITCase extends BaseApiITCase {
-    private final BorderlessAccountsApi api = new BorderlessAccountsApi(SANDBOX, SANDBOX_API_TOKEN);
+    private final BorderlessAccountsApi api = new BorderlessAccountsApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
     public void testBorderlessAccounts() {

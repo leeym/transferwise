@@ -11,12 +11,12 @@ import java.util.List;
 
 import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.USD;
-import static com.leeym.api.Stage.SANDBOX;
+import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RatesApiITCase extends BaseApiITCase {
 
-    private final RatesApi api = new RatesApi(SANDBOX, SANDBOX_API_TOKEN);
+    private final RatesApi api = new RatesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
 
     @Test
     public void getRateNow() {

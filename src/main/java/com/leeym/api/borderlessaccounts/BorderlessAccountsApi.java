@@ -1,14 +1,14 @@
 package com.leeym.api.borderlessaccounts;
 
 import com.leeym.api.BaseApi;
-import com.leeym.api.Stage;
 import com.leeym.common.ApiToken;
+import com.leeym.common.BaseUrl;
 import com.leeym.common.ProfileId;
 
 // https://api-docs.transferwise.com/#borderless-accounts
 public class BorderlessAccountsApi extends BaseApi {
-    public BorderlessAccountsApi(Stage stage, ApiToken token) {
-        super(stage, token);
+    public BorderlessAccountsApi(BaseUrl baseUrl, ApiToken token) {
+        super(baseUrl, token);
     }
 
     public BorderlessAccount getBorderlessAccount(ProfileId profileId) {

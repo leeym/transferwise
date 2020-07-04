@@ -1,7 +1,5 @@
 package com.leeym.common;
 
-import com.leeym.api.Stage;
-
 public class ApiToken extends UUID {
     private final Stage stage;
 
