@@ -15,8 +15,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class BaseApi {
+    private final Logger logger = Logger.getAnonymousLogger();
     protected final Gson gson;
     private final BaseUrl baseUrl;
     private final ApiToken token;
@@ -43,7 +45,7 @@ public class BaseApi {
 
     protected String get(String path) {
         URI uri = URI.create(baseUrl + path);
-        System.err.println(">>> GET " + uri);
+        logger.info(">>> GET " + uri);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .uri(uri)
@@ -57,18 +59,17 @@ public class BaseApi {
         }
         JsonElement jsonElement = JsonParser.parseString(body);
         if (jsonElement.isJsonObject()) {
-            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
         } else if (jsonElement.isJsonArray()) {
-            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
         }
         return body;
     }
 
     protected String post(String path, Object object) {
         URI uri = URI.create(baseUrl + path);
-        System.err.println(">>> POST " + uri);
         String json = gson.toJson(object);
-        System.err.println(">>> " + json);
+        logger.info(">>> POST " + uri + "\n" + json);
         HttpRequest request = HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(json))
                 .uri(uri)
@@ -84,9 +85,9 @@ public class BaseApi {
         }
         JsonElement jsonElement = JsonParser.parseString(body);
         if (jsonElement.isJsonObject()) {
-            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
         } else if (jsonElement.isJsonArray()) {
-            System.err.println("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
         }
         return body;
     }

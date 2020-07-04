@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.leeym.api.Currencies.AUD;
@@ -36,6 +37,7 @@ import static java.math.RoundingMode.HALF_UP;
 
 public class RebalanceCurrencies implements Callable<String> {
 
+    private final Logger logger = Logger.getAnonymousLogger();
     // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
     private final Map<Currency, Double> idealAllocation = ImmutableMap.<Currency, Double>builder()
             .put(USD, 88.3)
@@ -52,8 +54,8 @@ public class RebalanceCurrencies implements Callable<String> {
     private final QuotesApi quotesApi;
     private final ProfileId profileId;
 
-    public RebalanceCurrencies(BorderlessAccountsApi borderlessAccountsApi, RatesApi ratesApi, QuotesApi quotesApi,
-                               ProfileId profileId) {
+    public RebalanceCurrencies(ProfileId profileId, BorderlessAccountsApi borderlessAccountsApi, RatesApi ratesApi,
+                               QuotesApi quotesApi) {
         this.borderlessAccountsApi = borderlessAccountsApi;
         this.ratesApi = ratesApi;
         this.quotesApi = quotesApi;
@@ -62,7 +64,6 @@ public class RebalanceCurrencies implements Callable<String> {
 
     @Override
     public String call() {
-        CurrencyPairs currencyPairs = borderlessAccountsApi.getCurrencyPairs();
         BorderlessAccount account = borderlessAccountsApi.getBorderlessAccount(profileId);
         BorderlessAccountId accountId = account.getId();
         List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
@@ -73,8 +74,10 @@ public class RebalanceCurrencies implements Callable<String> {
         Map<Currency, Amount> equivalentAmounts = new HashMap<>();
         Map<Currency, Map<Currency, Double>> rates = new HashMap<>();
         for (Currency currency : currencies) {
-            Amount existingAmount = amounts.stream().filter(amount -> amount.getCurrency().equals(currency))
-                    .findFirst().orElseGet(() -> new Amount(currency, ZERO));
+            Amount existingAmount = amounts.stream()
+                    .filter(amount -> amount.getCurrency().equals(currency))
+                    .findFirst()
+                    .orElseGet(() -> new Amount(currency, ZERO));
             existingAmounts.put(currency, existingAmount);
             Rate rate = ratesApi.getRateNow(currency, USD);
             double doubleValue = rate.getRate().doubleValue();
@@ -84,7 +87,7 @@ public class RebalanceCurrencies implements Callable<String> {
             equivalentAmounts.put(currency, equivalentAmount);
         }
         Amount equivalentSum = equivalentAmounts.values().stream().reduce(new Amount(USD, ZERO), Amount::add);
-        List<Amount> differences = new LinkedList<>();
+        List<Amount> orders = new LinkedList<>();
         for (Currency currency : currencies) {
             Amount existingAmount = existingAmounts.get(currency);
             Amount equivalentAmount = equivalentAmounts.get(currency);
@@ -94,19 +97,30 @@ public class RebalanceCurrencies implements Callable<String> {
             Amount idealAmount = new Amount(currency, equivalentSum.getValue()
                     .multiply(new BigDecimal(idealPercentage))
                     .multiply(BigDecimal.valueOf(rates.get(USD).get(currency))));
-            System.err.printf("Currency:%s, existing: %s %.2f%%, ideal: %s %.2f%%\n", currency,
-                    existingAmount, existingPercentage * 100, idealAmount, idealPercentage * 100);
-            if (!currency.equals(USD)) {
-                differences.add(idealAmount.subtract(existingAmount));
+            boolean balanced = Math.abs(idealPercentage - existingPercentage) < 0.01;
+            logger.info(String.format("Currency:%s, existing: %s (%.2f%%), ideal: %s (%.2f%%), balanced: %s\n",
+                    currency,
+                    existingAmount, existingPercentage * 100, idealAmount, idealPercentage * 100, balanced));
+            if (balanced) {
+                continue;
             }
+            logger.info(String.format("Rebalancing %s from %f to %f\n", currency,
+                    existingPercentage * 100, idealPercentage * 100));
+            orders.add(idealAmount.subtract(existingAmount));
         }
-        differences.sort(Comparator.comparing(Amount::getValue));
-        System.err.println(differences);
-        for (Amount amount : differences) {
+        if (orders.isEmpty()) {
+            return orders.toString();
+        }
+        orders.sort(Comparator.comparing(Amount::getValue));
+        CurrencyPairs currencyPairs = borderlessAccountsApi.getCurrencyPairs();
+        for (Amount amount : orders) {
             Currency currency = amount.getCurrency();
             BigDecimal value = amount.getValue().abs();
             BigDecimal maxInvoiceAmount = currencyPairs.getSourceCurrency(currency).maxInvoiceAmount;
-            value = value.min(maxInvoiceAmount).setScale(currency.getDefaultFractionDigits(), HALF_UP);
+            if (value.compareTo(maxInvoiceAmount) < 0) {
+                logger.info(String.format("Reduce volume for %s from %s to %s\n", currency, value, maxInvoiceAmount));
+                value = value.min(maxInvoiceAmount).setScale(currency.getDefaultFractionDigits(), HALF_UP);
+            }
             final QuoteId quoteId;
             if (amount.isNegative()) {
                 quoteId = quotesApi.sellSourceToTarget(profileId, currency, value, USD).getId();
@@ -117,8 +131,7 @@ public class RebalanceCurrencies implements Callable<String> {
             }
             assert !quoteId.toString().isEmpty();
             ConversionResponse response = borderlessAccountsApi.executeQuoteAndConvert(accountId, quoteId);
-            System.err.println(response);
         }
-        return "";
+        return orders.toString();
     }
 }

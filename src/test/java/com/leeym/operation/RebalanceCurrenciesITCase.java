@@ -18,7 +18,7 @@ class RebalanceCurrenciesITCase extends BaseApiITCase {
     @Test
     public void testCall() {
         RebalanceCurrencies rebalanceCurrencies =
-                new RebalanceCurrencies(borderlessAccountsApi, ratesApi, quotesApi, SANDBOX_PERSONAL_PROFILE_ID);
+                new RebalanceCurrencies(SANDBOX_PERSONAL_PROFILE_ID, borderlessAccountsApi, ratesApi, quotesApi);
         rebalanceCurrencies.call();
     }
 }

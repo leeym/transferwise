@@ -1,6 +1,5 @@
 package com.leeym.api;
 
-import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +10,16 @@ class BorderlessAccountsApiITCase extends BaseApiITCase {
 
     @Test
     public void getBorderlessAccount() {
-        BorderlessAccount borderlessAccount = api.getBorderlessAccount(SANDBOX_PERSONAL_PROFILE_ID);
-        System.err.println(borderlessAccount);
+        api.getBorderlessAccount(SANDBOX_PERSONAL_PROFILE_ID);
     }
 
     @Test
     public void getCurrencyPairs() {
-        System.err.println(api.getCurrencyPairs());
+        api.getCurrencyPairs();
     }
 
     @Test
     public void getBalanceCurrencies() {
-        System.err.println(api.getBalanceCurrencies());
+        api.getBalanceCurrencies();
     }
 }

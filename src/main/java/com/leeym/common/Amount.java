@@ -57,7 +57,7 @@ public class Amount {
 
     @Override
     public String toString() {
-        return currency.getCurrencyCode() + value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
+        return currency.getSymbol() + " " + value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
     }
 
     @Override
