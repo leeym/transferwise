@@ -3,19 +3,17 @@ package com.leeym.api.borderlessaccounts;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Currency;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 public class CurrencyPairs {
     public SourceCurrency[] sourceCurrencies;
     public Integer total;
 
-    public List<SourceCurrency> getSourceCurrencies() {
-        return Arrays.stream(sourceCurrencies).collect(Collectors.toList());
-    }
-
-    public SourceCurrency getSourceCurrency(Currency currency) {
-        return Arrays.stream(sourceCurrencies).filter(s -> s.currencyCode.equals(currency)).findFirst().get();
+    public SourceCurrency get(Currency currency) {
+        return Arrays.stream(sourceCurrencies)
+                .filter(s -> s.currencyCode.equals(currency))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public static class SourceCurrency {
@@ -23,6 +21,13 @@ public class CurrencyPairs {
         public BigDecimal maxInvoiceAmount;
         public TargetCurrency[] targetCurrencies;
         public Integer totalTargetCurrencies;
+
+        public TargetCurrency get(Currency currency) {
+            return Arrays.stream(targetCurrencies)
+                    .filter(s -> s.currencyCode.equals(currency))
+                    .findFirst()
+                    .orElseThrow(NoSuchElementException::new);
+        }
     }
 
     public static class TargetCurrency {

@@ -37,7 +37,9 @@ import static java.math.RoundingMode.HALF_UP;
 
 public class RebalanceCurrencies implements Callable<String> {
 
+    private static final Currency DEFAULT = USD;
     private final Logger logger = Logger.getAnonymousLogger();
+
     // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
     private final Map<Currency, Double> idealAllocation = ImmutableMap.<Currency, Double>builder()
             .put(USD, 88.3)
@@ -79,33 +81,32 @@ public class RebalanceCurrencies implements Callable<String> {
                     .findFirst()
                     .orElseGet(() -> new Amount(currency, ZERO));
             existingAmounts.put(currency, existingAmount);
-            Rate rate = ratesApi.getRateNow(currency, USD);
+            Rate rate = ratesApi.getRateNow(currency, DEFAULT);
             double doubleValue = rate.getRate().doubleValue();
-            rates.computeIfAbsent(currency, k -> new HashMap<>()).put(USD, doubleValue);
-            rates.computeIfAbsent(USD, k -> new HashMap<>()).put(currency, 1 / doubleValue);
-            Amount equivalentAmount = new Amount(USD, existingAmount.getValue().multiply(rate.getRate()));
+            rates.computeIfAbsent(currency, k -> new HashMap<>()).put(DEFAULT, doubleValue);
+            rates.computeIfAbsent(DEFAULT, k -> new HashMap<>()).put(currency, 1 / doubleValue);
+            Amount equivalentAmount = new Amount(DEFAULT, existingAmount.getValue().multiply(rate.getRate()));
             equivalentAmounts.put(currency, equivalentAmount);
         }
-        Amount equivalentSum = equivalentAmounts.values().stream().reduce(new Amount(USD, ZERO), Amount::add);
+        Amount equivalentSum = equivalentAmounts.values().stream().reduce(new Amount(DEFAULT, ZERO), Amount::add);
         List<Amount> orders = new LinkedList<>();
         for (Currency currency : currencies) {
             Amount existingAmount = existingAmounts.get(currency);
             Amount equivalentAmount = equivalentAmounts.get(currency);
             double existingPercentage =
-                    equivalentAmount.getValue().doubleValue() / equivalentSum.getValue().doubleValue();
-            double idealPercentage = idealAllocation.getOrDefault(currency, 0D) / idealSum;
+                    equivalentAmount.getValue().doubleValue() * 100 / equivalentSum.getValue().doubleValue();
+            double idealPercentage = idealAllocation.getOrDefault(currency, 0D) * 100 / idealSum;
             Amount idealAmount = new Amount(currency, equivalentSum.getValue()
                     .multiply(new BigDecimal(idealPercentage))
-                    .multiply(BigDecimal.valueOf(rates.get(USD).get(currency))));
-            boolean balanced = Math.abs(idealPercentage - existingPercentage) < 0.01;
-            logger.info(String.format("Currency:%s, existing: %s (%.2f%%), ideal: %s (%.2f%%), balanced: %s\n",
-                    currency,
-                    existingAmount, existingPercentage * 100, idealAmount, idealPercentage * 100, balanced));
+                    .multiply(BigDecimal.valueOf(rates.get(DEFAULT).get(currency))));
+            boolean balanced = Math.abs(idealPercentage - existingPercentage) < 1;
+            logger.info(String.format("Currency:%s, balanced: %s, existing: %s (%.2f%%), ideal: %s (%.2f%%)\n",
+                    currency, balanced, existingAmount, existingPercentage, idealAmount, idealPercentage));
             if (balanced) {
                 continue;
             }
-            logger.info(String.format("Rebalancing %s from %f to %f\n", currency,
-                    existingPercentage * 100, idealPercentage * 100));
+            logger.info(String.format("Rebalancing %s from %.2f%% to %.2f%%\n", currency, existingPercentage,
+                    idealPercentage));
             orders.add(idealAmount.subtract(existingAmount));
         }
         if (orders.isEmpty()) {
@@ -116,16 +117,31 @@ public class RebalanceCurrencies implements Callable<String> {
         for (Amount amount : orders) {
             Currency currency = amount.getCurrency();
             BigDecimal value = amount.getValue().abs();
-            BigDecimal maxInvoiceAmount = currencyPairs.getSourceCurrency(currency).maxInvoiceAmount;
-            if (value.compareTo(maxInvoiceAmount) < 0) {
-                logger.info(String.format("Reduce volume for %s from %s to %s\n", currency, value, maxInvoiceAmount));
-                value = value.min(maxInvoiceAmount).setScale(currency.getDefaultFractionDigits(), HALF_UP);
+            final BigDecimal maxInvoiceAmount;
+            final BigDecimal minInvoiceAmount;
+            if (amount.isNegative()) {
+                // source: currency, target: DEFAULT
+                maxInvoiceAmount = currencyPairs.get(currency).maxInvoiceAmount;
+                minInvoiceAmount = currencyPairs.get(currency).get(DEFAULT).minInvoiceAmount;
+            } else {
+                // source: DEFAULT, target: currency
+                maxInvoiceAmount = currencyPairs.get(DEFAULT).maxInvoiceAmount;
+                minInvoiceAmount = currencyPairs.get(DEFAULT).get(currency).minInvoiceAmount;
             }
+            if (value.compareTo(maxInvoiceAmount) > 0) {
+                logger.info(String.format("Reduce %s from %s to %s\n", currency, value, maxInvoiceAmount));
+                value = value.min(maxInvoiceAmount);
+            }
+            if (value.compareTo(minInvoiceAmount) < 0) {
+                logger.info(String.format("Skip %s of %s since it is below %s\n", currency, value, minInvoiceAmount));
+                continue;
+            }
+            value = value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
             final QuoteId quoteId;
             if (amount.isNegative()) {
-                quoteId = quotesApi.sellSourceToTarget(profileId, currency, value, USD).getId();
+                quoteId = quotesApi.sellSourceToTarget(profileId, currency, value, DEFAULT).getId();
             } else if (amount.isPositive()) {
-                quoteId = quotesApi.buyTargetFromSource(profileId, USD, currency, value).getId();
+                quoteId = quotesApi.buyTargetFromSource(profileId, DEFAULT, currency, value).getId();
             } else {
                 continue;
             }

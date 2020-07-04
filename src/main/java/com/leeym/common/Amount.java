@@ -36,23 +36,33 @@ public class Amount {
     }
 
     public boolean isPositive() {
-        return value.compareTo(BigDecimal.ZERO) > 0;
+        return isGreaterThan(new Amount(currency, BigDecimal.ZERO));
     }
 
     public boolean isNegative() {
-        return value.compareTo(BigDecimal.ZERO) < 0;
+        return isLessThan(new Amount(currency, BigDecimal.ZERO));
     }
 
     public boolean isZero() {
-        return value.compareTo(BigDecimal.ZERO) == 0;
+        return equals(new Amount(currency, BigDecimal.ZERO));
     }
 
     public Amount abs() {
-        return isPositive() ? this : negate();
+        return isNegative() ? negate() : this;
     }
 
     public Amount negate() {
         return new Amount(currency, value.negate());
+    }
+
+    public boolean isLessThan(Amount that) {
+        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + that + " to " + this);
+        return value.compareTo(that.value) < 0;
+    }
+
+    public boolean isGreaterThan(Amount that) {
+        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + that + " to " + this);
+        return value.compareTo(that.value) > 0;
     }
 
     @Override

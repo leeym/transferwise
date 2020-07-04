@@ -59,9 +59,9 @@ public class BaseApi {
         }
         JsonElement jsonElement = JsonParser.parseString(body);
         if (jsonElement.isJsonObject()) {
-            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonObject()));
         } else if (jsonElement.isJsonArray()) {
-            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonArray()));
         }
         return body;
     }
@@ -85,9 +85,9 @@ public class BaseApi {
         }
         JsonElement jsonElement = JsonParser.parseString(body);
         if (jsonElement.isJsonObject()) {
-            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonObject()));
+            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonObject()));
         } else if (jsonElement.isJsonArray()) {
-            logger.info("<<< " + gson.toJson(jsonElement.getAsJsonArray()));
+            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonArray()));
         }
         return body;
     }

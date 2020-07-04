@@ -21,15 +21,62 @@ import static com.leeym.api.Currencies.SGD;
 import static com.leeym.api.Currencies.TWD;
 import static com.leeym.api.Currencies.USD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AmountTest {
 
     private static final BigDecimal VALUE = new BigDecimal("12345.67890");
+    private static final Amount NEGATIVE_ONE_USD = new Amount(USD, BigDecimal.ONE.negate());
+    private static final Amount ZERO_USD = new Amount(USD, BigDecimal.ZERO);
     private static final Amount ONE_USD = new Amount(USD, BigDecimal.ONE);
     private static final Amount TWO_USD = new Amount(USD, new BigDecimal("2"));
     private static final Amount ONE_EUR = new Amount(EUR, BigDecimal.ONE);
     private final Logger logger = Logger.getAnonymousLogger();
+
+    @Test
+    public void isPositive() {
+        assertFalse(NEGATIVE_ONE_USD.isPositive());
+        assertFalse(ZERO_USD.isPositive());
+        assertTrue(ONE_USD.isPositive());
+    }
+
+    @Test
+    public void isNegative() {
+        assertTrue(NEGATIVE_ONE_USD.isNegative());
+        assertFalse(ZERO_USD.isPositive());
+        assertFalse(ONE_USD.isNegative());
+    }
+
+    @Test
+    public void isZero() {
+        assertFalse(NEGATIVE_ONE_USD.isZero());
+        assertTrue(ZERO_USD.isZero());
+        assertFalse(ONE_USD.isZero());
+    }
+
+    @Test
+    public void isGreaterThan() {
+        assertTrue(ZERO_USD.isGreaterThan(NEGATIVE_ONE_USD));
+        assertFalse(ZERO_USD.isGreaterThan(ZERO_USD));
+        assertFalse(ZERO_USD.isGreaterThan(ONE_USD));
+    }
+
+    @Test
+    public void isLessThan() {
+        assertFalse(ZERO_USD.isLessThan(NEGATIVE_ONE_USD));
+        assertFalse(ZERO_USD.isLessThan(ZERO_USD));
+        assertTrue(ZERO_USD.isLessThan(ONE_USD));
+    }
+
+    @Test
+    public void equals() {
+        assertNotEquals(ZERO_USD, NEGATIVE_ONE_USD);
+        assertEquals(ZERO_USD, ZERO_USD);
+        assertNotEquals(ZERO_USD, ONE_USD);
+    }
 
     @Test
     public void testUSD() {
