@@ -1,17 +1,18 @@
 package com.leeym.api;
 
 import com.google.common.collect.Iterables;
-import com.leeym.api.exchangerates.Interval;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
 import com.leeym.api.exchangerates.RatesRequest;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.USD;
 import static com.leeym.api.Stage.SANDBOX;
+import static com.leeym.api.exchangerates.RatesRequest.Interval.day;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RatesApiITCase extends BaseApiITCase {
@@ -29,7 +30,8 @@ class RatesApiITCase extends BaseApiITCase {
 
     @Test
     public void testRatesGroupedByDate() {
-        RatesRequest request = new RatesRequest(USD, EUR, "2020-06-01", "2020-06-30", Interval.day);
+        RatesRequest request =
+                new RatesRequest(USD, EUR, LocalDate.parse("2020-06-01"), LocalDate.parse("2020-06-30"), day);
         List<Rate> rates = api.getRates(request);
         assertEquals(30, rates.size());
         for (Rate rate : rates) {
