@@ -1,13 +1,12 @@
 package com.leeym.operation;
 
 import com.google.common.collect.Iterables;
-import com.leeym.api.borderlessaccounts.Amount;
-import com.leeym.api.borderlessaccounts.Balance;
 import com.leeym.api.borderlessaccounts.BorderlessAccount;
 import com.leeym.api.borderlessaccounts.BorderlessAccountsApi;
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
 import com.leeym.api.exchangerates.RatesRequest;
+import com.leeym.common.Amount;
 import com.leeym.common.ProfileId;
 
 import java.math.BigDecimal;
@@ -20,6 +19,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static com.leeym.api.Currencies.USD;
+import static com.leeym.api.borderlessaccounts.BorderlessAccount.Balance;
 
 public class RebalanceCurrencies implements Callable<String> {
 

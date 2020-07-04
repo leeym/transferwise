@@ -1,4 +1,4 @@
-package com.leeym.api.borderlessaccounts;
+package com.leeym.common;
 
 import com.google.common.base.Preconditions;
 

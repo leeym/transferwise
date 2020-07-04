@@ -1,6 +1,5 @@
-package com.leeym.api;
+package com.leeym.common;
 
-import com.leeym.api.borderlessaccounts.Amount;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
