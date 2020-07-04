@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BorderlessAccount {
-    private BorderlessAcountId id;
+    private BorderlessAccountId id;
     private ProfileId profileId;
     private RecipientId recipientId;
     private OffsetDateTime creationTime;
