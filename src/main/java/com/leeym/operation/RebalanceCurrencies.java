@@ -72,8 +72,8 @@ import static java.math.RoundingMode.HALF_UP;
 
 /**
  * existing:   the balances currently in the account
- * equivalent: the existing amount covered into USD
- * ideal:      the portfolio we want, though some currencies may be unsupported or unwanted..
+ * equivalent: the existing amount calculated in USD
+ * ideal:      the portfolio we originally want, though some currencies may be unsupported or unwanted.
  * optimal:    the actual portfolio we can have
  */
 public class RebalanceCurrencies implements Callable<List<String>> {
@@ -81,7 +81,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
     private static final double THRESHOLD = 0.05;
     private static final Set<Currency> UNWANTED_CURRENCIES = ImmutableSet.of(CNY, HKD);
     // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
-    private static final Map<Currency, Double> IDEAL_ALLOCATION = ImmutableMap.<Currency, Double>builder()
+    private static final Map<Currency, Double> IDEAL_PORTFOLIO = ImmutableMap.<Currency, Double>builder()
             .put(USD, 88.3) // 1
             .put(EUR, 32.3) // 2
             .put(JPY, 16.8) // 3
@@ -160,27 +160,27 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         return map;
     }
 
-    private Map<Currency, Double> getOptimalAllocation() {
+    private Map<Currency, Double> getOptimalPortfolio() {
         List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
-        Map<Currency, Double> optimalAllocation = IDEAL_ALLOCATION.entrySet().stream()
+        Map<Currency, Double> optimalPortfolio = IDEAL_PORTFOLIO.entrySet().stream()
                 .filter(entry -> !UNWANTED_CURRENCIES.contains(entry.getKey()))
                 .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_ALLOCATION.keySet(), optimalAllocation.keySet());
+        Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_PORTFOLIO.keySet(), optimalPortfolio.keySet());
         logger.info("Ignore unsupported/unwanted currencies: " + unsupported);
-        return optimalAllocation;
+        return optimalPortfolio;
     }
 
     private List<Amount> evaluate(List<Amount> amounts) {
         if (amounts.isEmpty()) {
             return Collections.emptyList();
         }
-        final Map<Currency, Double> optimalAllocation = getOptimalAllocation();
-        final Double optimalSum = optimalAllocation.values().stream().reduce(0D, Double::sum);
+        final Map<Currency, Double> optimalPortfolio = getOptimalPortfolio();
+        final Double optimalSum = optimalPortfolio.values().stream().reduce(0D, Double::sum);
 
         Set<Currency> currencies = new HashSet<>();
         currencies.addAll(amounts.stream().map(Amount::getCurrency).collect(Collectors.toList()));
-        currencies.addAll(optimalAllocation.keySet());
+        currencies.addAll(optimalPortfolio.keySet());
 
         Map<Currency, Amount> existingAmounts = new HashMap<>();
         Map<Currency, Amount> equivalentAmounts = new HashMap<>();
@@ -200,7 +200,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             Amount existingAmount = existingAmounts.get(currency);
             Amount equivalentAmount = equivalentAmounts.get(currency);
             double existingProportion = equivalentAmount.divide(equivalentSum);
-            double optimalProportion = optimalAllocation.getOrDefault(currency, 0D) / optimalSum;
+            double optimalProportion = optimalPortfolio.getOrDefault(currency, 0D) / optimalSum;
             Amount optimalAmount = equivalentSum
                     .multiply(new BigDecimal(optimalProportion))
                     .multiply(rates.get(USD).get(currency));
