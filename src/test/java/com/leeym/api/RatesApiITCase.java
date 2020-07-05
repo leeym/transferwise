@@ -2,7 +2,6 @@ package com.leeym.api;
 
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -28,7 +27,6 @@ class RatesApiITCase extends BaseApiITCase {
         assertEquals(EUR, rate.getTarget());
     }
 
-    @Disabled
     @Test
     public void getSourceRatesNow() {
         List<Rate> rates = api.getSourceRatesNow(USD);
