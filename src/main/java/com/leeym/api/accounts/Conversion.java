@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static java.math.BigDecimal.ZERO;
 
-public class ConversionResponse {
+public class Conversion {
     private ConversionId id;
     private String type;
     private String state;

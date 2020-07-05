@@ -23,10 +23,10 @@ public class AccountsApi extends BaseApi {
     }
 
     // https://api-docs.transferwise.com/#borderless-accounts-convert-currencies
-    public ConversionResponse executeQuoteAndConvert(AccountId accountId, QuoteId quoteId) {
+    public Conversion executeQuoteAndConvert(AccountId accountId, QuoteId quoteId) {
         ConversionRequest request = new ConversionRequest(quoteId);
         String json = post("/v1/borderless-accounts/" + accountId + "/conversions", request);
-        return gson.fromJson(json, ConversionResponse.class);
+        return gson.fromJson(json, Conversion.class);
     }
 
     // https://api-docs.transferwise.com/#borderless-accounts-get-currency-pairs

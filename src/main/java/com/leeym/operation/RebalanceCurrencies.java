@@ -7,7 +7,7 @@ import com.leeym.api.accounts.Account;
 import com.leeym.api.accounts.AccountId;
 import com.leeym.api.accounts.AccountsApi;
 import com.leeym.api.accounts.BalanceCurrency;
-import com.leeym.api.accounts.ConversionResponse;
+import com.leeym.api.accounts.Conversion;
 import com.leeym.api.accounts.CurrencyPairs;
 import com.leeym.api.profiles.ProfileId;
 import com.leeym.api.quotes.Quote;
@@ -264,7 +264,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 continue;
             }
             assert !quote.hasErrors();
-            ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quote.getId());
+            Conversion response = accountsApi.executeQuoteAndConvert(accountId, quote.getId());
             logger.info(String.format("%s = %s + %s", response.getSourceAmount(), response.getFeeAmount(),
                     response.getTargetAmount()));
         }
