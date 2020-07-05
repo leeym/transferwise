@@ -25,4 +25,17 @@ public class Currencies {
     public static final Currency TWD = Currency.getInstance("TWD");
     public static final Currency USD = Currency.getInstance("USD");
     public static final Currency ZAR = Currency.getInstance("ZAR");
+    public static final Currency DKK = Currency.getInstance("DKK");
+    public static final Currency PLN = Currency.getInstance("PLN");
+    public static final Currency THB = Currency.getInstance("THB");
+    public static final Currency IDR = Currency.getInstance("IDR");
+    public static final Currency HUF = Currency.getInstance("HUF");
+    public static final Currency CZK = Currency.getInstance("CZK");
+    public static final Currency CLP = Currency.getInstance("CLP");
+    public static final Currency PHP = Currency.getInstance("PHP");
+    public static final Currency AED = Currency.getInstance("AED");
+    public static final Currency COP = Currency.getInstance("COP");
+    public static final Currency SAR = Currency.getInstance("SAR");
+    public static final Currency MYR = Currency.getInstance("MYR");
+    public static final Currency RON = Currency.getInstance("RON");
 }

@@ -17,6 +17,7 @@ import com.leeym.api.userprofiles.ProfileId;
 import com.leeym.common.Amount;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.HashMap;
@@ -29,23 +30,37 @@ import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static com.leeym.api.Currencies.AED;
 import static com.leeym.api.Currencies.AUD;
 import static com.leeym.api.Currencies.BRL;
 import static com.leeym.api.Currencies.CAD;
 import static com.leeym.api.Currencies.CHF;
+import static com.leeym.api.Currencies.CLP;
 import static com.leeym.api.Currencies.CNY;
+import static com.leeym.api.Currencies.COP;
+import static com.leeym.api.Currencies.CZK;
+import static com.leeym.api.Currencies.DKK;
 import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.GBP;
 import static com.leeym.api.Currencies.HKD;
+import static com.leeym.api.Currencies.HUF;
+import static com.leeym.api.Currencies.IDR;
+import static com.leeym.api.Currencies.ILS;
 import static com.leeym.api.Currencies.INR;
 import static com.leeym.api.Currencies.JPY;
 import static com.leeym.api.Currencies.KRW;
 import static com.leeym.api.Currencies.MXN;
+import static com.leeym.api.Currencies.MYR;
 import static com.leeym.api.Currencies.NOK;
 import static com.leeym.api.Currencies.NZD;
+import static com.leeym.api.Currencies.PHP;
+import static com.leeym.api.Currencies.PLN;
+import static com.leeym.api.Currencies.RON;
 import static com.leeym.api.Currencies.RUB;
+import static com.leeym.api.Currencies.SAR;
 import static com.leeym.api.Currencies.SEK;
 import static com.leeym.api.Currencies.SGD;
+import static com.leeym.api.Currencies.THB;
 import static com.leeym.api.Currencies.TRY;
 import static com.leeym.api.Currencies.TWD;
 import static com.leeym.api.Currencies.USD;
@@ -60,38 +75,49 @@ import static java.math.RoundingMode.HALF_UP;
  * ideal:      the portfolio we want, though some currencies may be unsupported or unwanted..
  * optimal:    the actual portfolio we can have
  */
-public class RebalanceCurrencies implements Callable<String> {
+public class RebalanceCurrencies implements Callable<List<String>> {
 
     private static final double THRESHOLD = 0.05;
-
-    private final Logger logger = Logger.getAnonymousLogger();
+    private static final Set<Currency> UNWANTED_CURRENCIES = ImmutableSet.of(CNY, HKD);
     // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
-    private final Map<Currency, Double> idealAllocation = ImmutableMap.<Currency, Double>builder()
-            .put(USD, 88.3)
-            .put(EUR, 32.3)
-            .put(JPY, 16.8)
-            .put(GBP, 12.8)
-            .put(AUD, 6.8)
-            .put(CAD, 5.0)
-            .put(CHF, 5.0)
-            .put(CNY, 4.3)
-            .put(HKD, 3.5)
-            .put(NZD, 2.1)
-            .put(SEK, 2.0)
-            .put(KRW, 2.0)
-            .put(SGD, 1.8)
-            .put(NOK, 1.8)
-            .put(MXN, 1.7)
-            .put(INR, 1.7)
-            .put(RUB, 1.1)
-            .put(ZAR, 1.1)
-            .put(TRY, 1.1)
-            .put(BRL, 1.1)
-            .put(TWD, 0.9)
+    private static final Map<Currency, Double> IDEAL_ALLOCATION = ImmutableMap.<Currency, Double>builder()
+            .put(USD, 88.3) // 1
+            .put(EUR, 32.3) // 2
+            .put(JPY, 16.8) // 3
+            .put(GBP, 12.8) // 4
+            .put(AUD, 6.8)  // 5
+            .put(CAD, 5.0)  // 6
+            .put(CHF, 5.0)  // 7
+            .put(CNY, 4.3)  // 8
+            .put(HKD, 3.5)  // 9
+            .put(NZD, 2.1)  // 10
+            .put(SEK, 2.0)  // 11
+            .put(KRW, 2.0)  // 12
+            .put(SGD, 1.8)  // 13
+            .put(NOK, 1.8)  // 14
+            .put(MXN, 1.7)  // 15
+            .put(INR, 1.7)  // 16
+            .put(RUB, 1.1)  // 17
+            .put(ZAR, 1.1)  // 18
+            .put(TRY, 1.1)  // 19
+            .put(BRL, 1.1)  // 20
+            .put(TWD, 0.9)  // 21
+            .put(DKK, 0.6)  // 22
+            .put(PLN, 0.6)  // 23
+            .put(THB, 0.5)  // 24
+            .put(IDR, 0.4)  // 25
+            .put(HUF, 0.4)  // 26
+            .put(CZK, 0.4)  // 27
+            .put(ILS, 0.3)  // 28
+            .put(CLP, 0.3)  // 29
+            .put(PHP, 0.3)  // 30
+            .put(AED, 0.2)  // 31
+            .put(COP, 0.2)  // 32
+            .put(SAR, 0.2)  // 33
+            .put(MYR, 0.1)  // 34
+            .put(RON, 0.1)  // 35
             .build();
-
-    private final Set<Currency> unwantedCurrencies = ImmutableSet.of(CNY, HKD);
-
+    private final Logger logger = Logger.getAnonymousLogger();
     private final AccountsApi accountsApi;
     private final RatesApi ratesApi;
     private final QuotesApi quotesApi;
@@ -106,13 +132,13 @@ public class RebalanceCurrencies implements Callable<String> {
     }
 
     @Override
-    public String call() {
+    public List<String> call() {
         List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
-        final Map<Currency, Double> optimalAllocation = idealAllocation.entrySet().stream()
-                .filter(entry -> !unwantedCurrencies.contains(entry.getKey()))
+        final Map<Currency, Double> optimalAllocation = IDEAL_ALLOCATION.entrySet().stream()
+                .filter(entry -> !UNWANTED_CURRENCIES.contains(entry.getKey()))
                 .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Sets.SetView<Currency> unsupported = Sets.difference(idealAllocation.keySet(), optimalAllocation.keySet());
+        Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_ALLOCATION.keySet(), optimalAllocation.keySet());
         logger.info("Ignore unsupported/unwanted currencies: " + unsupported);
         final Double optimalSum = optimalAllocation.values().stream().reduce(0D, Double::sum);
 
@@ -123,9 +149,9 @@ public class RebalanceCurrencies implements Callable<String> {
         currencies.addAll(amounts.stream().map(Amount::getCurrency).collect(Collectors.toList()));
         currencies.addAll(optimalAllocation.keySet());
 
+        Map<Currency, Map<Currency, Rate>> rates = new HashMap<>();
         Map<Currency, Amount> existingAmounts = new HashMap<>();
         Map<Currency, Amount> equivalentAmounts = new HashMap<>();
-        Map<Currency, Map<Currency, Rate>> rates = new HashMap<>();
         for (Currency currency : currencies) {
             Amount existingAmount = amounts.stream()
                     .filter(amount -> amount.getCurrency().equals(currency))
@@ -138,6 +164,7 @@ public class RebalanceCurrencies implements Callable<String> {
             Amount equivalentAmount = existingAmount.multiply(rates.get(currency).get(USD));
             equivalentAmounts.put(currency, equivalentAmount);
         }
+
         Amount equivalentSum = equivalentAmounts.values().stream().reduce(new Amount(USD, ZERO), Amount::add);
         List<Amount> orders = new LinkedList<>();
         for (Currency currency : currencies) {
@@ -149,7 +176,8 @@ public class RebalanceCurrencies implements Callable<String> {
                     .multiply(new BigDecimal(optimalProportion))
                     .multiply(rates.get(USD).get(currency));
             Amount deviationAmount = optimalAmount.subtract(existingAmount).abs();
-            boolean balanced = existingAmount.isPositive() && deviationAmount.divide(optimalAmount) < THRESHOLD;
+            boolean balanced = deviationAmount.getValue().abs().intValue() < 1;
+            balanced |= deviationAmount.divide(optimalAmount) < THRESHOLD;
             logger.info(String.format("Currency:%s, balanced: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
                     currency, balanced,
                     existingAmount, existingProportion * 100,
@@ -159,7 +187,7 @@ public class RebalanceCurrencies implements Callable<String> {
             }
         }
         if (orders.isEmpty()) {
-            return orders.toString();
+            return Collections.emptyList();
         }
         orders.sort(Comparator.comparing(a -> a.multiply(rates.get(a.getCurrency()).get(USD))));
         CurrencyPairs pairs = accountsApi.getCurrencyPairs();
@@ -197,6 +225,6 @@ public class RebalanceCurrencies implements Callable<String> {
             assert !quoteId.toString().isEmpty();
             ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quoteId);
         }
-        return orders.toString();
+        return orders.stream().map(Amount::toString).collect(Collectors.toList());
     }
 }

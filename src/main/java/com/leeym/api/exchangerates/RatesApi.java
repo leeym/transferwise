@@ -32,6 +32,16 @@ public class RatesApi extends BaseApi {
         return Iterables.getOnlyElement(getRates(request));
     }
 
+    public List<Rate> getSourceRatesNow(Currency source) {
+        RatesRequest request = new RatesRequest(source, null);
+        return getRates(request);
+    }
+
+    public List<Rate> getTargetRatesNow(Currency target) {
+        RatesRequest request = new RatesRequest(null, target);
+        return getRates(request);
+    }
+
     public Rate getRateAt(Currency source, Currency target, OffsetDateTime offsetDateTime) {
         RatesRequest request = new RatesRequest(source, target, offsetDateTime);
         return Iterables.getOnlyElement(getRates(request));

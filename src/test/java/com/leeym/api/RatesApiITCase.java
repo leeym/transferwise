@@ -2,6 +2,7 @@ package com.leeym.api;
 
 import com.leeym.api.exchangerates.Rate;
 import com.leeym.api.exchangerates.RatesApi;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -13,6 +14,8 @@ import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.USD;
 import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class RatesApiITCase extends BaseApiITCase {
 
@@ -23,6 +26,28 @@ class RatesApiITCase extends BaseApiITCase {
         Rate rate = api.getRateNow(USD, EUR);
         assertEquals(USD, rate.getSource());
         assertEquals(EUR, rate.getTarget());
+    }
+
+    @Disabled
+    @Test
+    public void getSourceRatesNow() {
+        List<Rate> rates = api.getSourceRatesNow(USD);
+        assertFalse(rates.isEmpty());
+        for (Rate rate : rates) {
+            assertEquals(USD, rate.getSource());
+            assertNotEquals(USD, rate.getTarget());
+        }
+    }
+
+    @Disabled
+    @Test
+    public void getTargetRatesNow() {
+        List<Rate> rates = api.getTargetRatesNow(USD);
+        assertFalse(rates.isEmpty());
+        for (Rate rate : rates) {
+            assertNotEquals(USD, rate.getSource());
+            assertEquals(USD, rate.getTarget());
+        }
     }
 
     @Test
