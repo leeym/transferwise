@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.math.RoundingMode.HALF_UP;
 
-public class Amount {
+public class Amount implements Comparable<Amount> {
     private final Currency currency;
     private final BigDecimal value;
 
@@ -36,6 +36,10 @@ public class Amount {
         return new Amount(currency, value.subtract(that.value));
     }
 
+    public Amount multiply(BigDecimal multiplicand) {
+        return new Amount(currency, value.multiply(multiplicand));
+    }
+
     public Amount multiply(Rate rate) {
         Preconditions.checkArgument(currency.equals(rate.getSource()), "Can't multiply " + this + " by " + rate);
         return new Amount(rate.getTarget(), value.multiply(rate.getRate()));
@@ -45,6 +49,10 @@ public class Amount {
         Preconditions.checkArgument(currency.equals(rate.getTarget()), "Can't divide " + this + " by " + rate);
         return new Amount(rate.getSource(), value.divide(rate.getRate(), rate.getSource().getDefaultFractionDigits(),
                 HALF_UP));
+    }
+
+    public Amount divide(BigDecimal divisor) {
+        return new Amount(currency, value.divide(divisor, currency.getDefaultFractionDigits(), HALF_UP));
     }
 
     public boolean isPositive() {
@@ -68,12 +76,12 @@ public class Amount {
     }
 
     public boolean isLessThan(Amount that) {
-        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + that + " to " + this);
+        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + this + " to " + that);
         return value.compareTo(that.value) < 0;
     }
 
     public boolean isGreaterThan(Amount that) {
-        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + that + " to " + this);
+        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + this + " to " + that);
         return value.compareTo(that.value) > 0;
     }
 
@@ -98,5 +106,11 @@ public class Amount {
     @Override
     public int hashCode() {
         return Objects.hash(currency, value);
+    }
+
+    @Override
+    public int compareTo(Amount that) {
+        Preconditions.checkArgument(currency.equals(that.currency), "can't compare " + this + " to " + that);
+        return this.value.compareTo(that.value);
     }
 }
