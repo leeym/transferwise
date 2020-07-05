@@ -148,6 +148,9 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 .map(Balance::getAmount)
                 .filter(amount -> !amount.isZero())
                 .collect(Collectors.toList());
+        if (amounts.isEmpty()) {
+            return Collections.emptyList();
+        }
         Set<Currency> currencies = new HashSet<>();
         currencies.addAll(amounts.stream().map(Amount::getCurrency).collect(Collectors.toList()));
         currencies.addAll(optimalAllocation.keySet());
@@ -187,14 +190,16 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             Amount deviationAmount = optimalAmount.subtract(existingAmount).abs();
             boolean balanced = deviationAmount.getValue().abs().intValue() < 1;
             balanced |= deviationAmount.divide(optimalAmount) < THRESHOLD;
-            logger.info(String.format("Currency:%s, balanced: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
-                    currency, balanced,
+            logger.info(String.format(
+                    "Currency:%s, balanced: %s, equivalent: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
+                    currency, balanced, equivalentAmount,
                     existingAmount, existingProportion * 100,
                     optimalAmount, optimalProportion * 100));
             if (!currency.equals(USD) && !balanced) {
                 orders.add(optimalAmount.subtract(existingAmount));
             }
         }
+        logger.info("Account total value: " + equivalentSum);
         if (orders.isEmpty()) {
             return Collections.emptyList();
         }
@@ -203,7 +208,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         for (Amount amount : orders) {
             Currency currency = amount.getCurrency();
             BigDecimal value = amount.getValue().abs().setScale(currency.getDefaultFractionDigits(), HALF_UP);
-            final BigDecimal maxAmount;
+            BigDecimal maxAmount;
             final BigDecimal minAmount;
             if (amount.isNegative()) {
                 // source: currency, target: USD
@@ -214,6 +219,12 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount).orElse(ZERO);
                 minAmount = pairs.get(USD).flatMap(s -> s.get(currency)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             }
+
+            // The most a recipient can get is 480,000 PHP.
+            if (currency.equals(PHP)) {
+                maxAmount = maxAmount.min(new BigDecimal("480000"));
+            }
+
             if (value.compareTo(maxAmount) > 0) {
                 logger.info(String.format("Reduce %s from %s to %s\n", currency, value, maxAmount));
                 value = value.min(maxAmount);
@@ -233,6 +244,8 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             }
             assert !quoteId.toString().isEmpty();
             ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quoteId);
+            logger.info(String.format("%s = %s + %s", response.getSourceAmount(), response.getFeeAmount(),
+                    response.getTargetAmount()));
         }
         return orders.stream().map(Amount::toString).collect(Collectors.toList());
     }

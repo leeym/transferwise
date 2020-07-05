@@ -7,29 +7,69 @@ import com.leeym.api.users.UserId;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Currency;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuoteResponse {
-    QuoteId id;
-    Currency source;
-    Currency target;
-    BigDecimal sourceAmount;
-    BigDecimal targetAmount;
-    Type type;
-    BigDecimal rate;
-    OffsetDateTime createdTime;
-    UserId createdByUserId;
-    ProfileId profile;
-    RateType rateType;
-    OffsetDateTime deliveryEstimate;
-    BigDecimal fee;
-    FeeDetails feeDetails;
-    Profile.Type[] allowedProfileTypes;
-    Boolean guaranteedTargetAmount;
-    Boolean ofSourceAmount;
+    private QuoteId id;
+    private Currency source;
+    private Currency target;
+    private BigDecimal sourceAmount;
+    private BigDecimal targetAmount;
+    private Type type;
+    private BigDecimal rate;
+    private OffsetDateTime createdTime;
+    private UserId createdByUserId;
+    private ProfileId profile;
+    private RateType rateType;
+    private OffsetDateTime deliveryEstimate;
+    private BigDecimal fee;
+    private FeeDetails feeDetails;
+    private Error[] errors;
+    private Profile.Type[] allowedProfileTypes;
+    private Boolean guaranteedTargetAmount;
+    private Boolean ofSourceAmount;
 
     public QuoteId getId() {
         return id;
+    }
+
+    public ProfileId getProfile() {
+        return profile;
+    }
+
+    public Currency getSource() {
+        return source;
+    }
+
+    public Currency getTarget() {
+        return target;
+    }
+
+    public boolean hasErrors() {
+        return !getErrors().isEmpty();
+    }
+
+    public List<Error> getErrors() {
+        return errors == null ? Collections.emptyList() : Arrays.stream(errors).collect(Collectors.toList());
+    }
+
+    public BigDecimal getSourceAmount() {
+        return sourceAmount;
+    }
+
+    public BigDecimal getTargetAmount() {
+        return targetAmount;
+    }
+
+    public RateType getRateType() {
+        return rateType;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     @Override
@@ -69,6 +109,16 @@ public class QuoteResponse {
                     ", discount=" + discount +
                     ", partner=" + partner +
                     '}';
+        }
+    }
+
+    static class Error {
+        String code;
+        String message;
+        String targetAmount;
+
+        public String getMessage() {
+            return message;
         }
     }
 }

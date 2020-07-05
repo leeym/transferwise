@@ -19,23 +19,23 @@ class QuotesApiITCase extends BaseApiITCase {
     public void buyTargetFromSource() {
         BigDecimal amount = new BigDecimal("600");
         QuoteResponse response = api.buyTargetFromSource(SANDBOX_PERSONAL_PROFILE_ID, EUR, GBP, amount);
-        assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.profile);
-        assertEquals(EUR, response.source);
-        assertEquals(GBP, response.target);
-        assertEquals(amount.longValue(), response.targetAmount.longValue());
-        assertEquals(RateType.FIXED, response.rateType);
-        assertEquals(BALANCE_CONVERSION, response.type);
+        assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.getProfile());
+        assertEquals(EUR, response.getSource());
+        assertEquals(GBP, response.getTarget());
+        assertEquals(amount.longValue(), response.getTargetAmount().longValue());
+        assertEquals(RateType.FIXED, response.getRateType());
+        assertEquals(BALANCE_CONVERSION, response.getType());
     }
 
     @Test
     public void sellSourceToTarget() {
         BigDecimal amount = new BigDecimal("600");
         QuoteResponse response = api.sellSourceToTarget(SANDBOX_PERSONAL_PROFILE_ID, GBP, amount, EUR);
-        assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.profile);
-        assertEquals(GBP, response.source);
-        assertEquals(amount.longValue(), response.sourceAmount.longValue());
-        assertEquals(EUR, response.target);
-        assertEquals(RateType.FIXED, response.rateType);
-        assertEquals(BALANCE_CONVERSION, response.type);
+        assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.getProfile());
+        assertEquals(GBP, response.getSource());
+        assertEquals(amount.longValue(), response.getSourceAmount().longValue());
+        assertEquals(EUR, response.getTarget());
+        assertEquals(RateType.FIXED, response.getRateType());
+        assertEquals(BALANCE_CONVERSION, response.getType());
     }
 }

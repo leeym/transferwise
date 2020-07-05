@@ -104,8 +104,11 @@ public class Amount implements Comparable<Amount> {
             return false;
         }
         Amount amount = (Amount) o;
-        return Objects.equals(currency, amount.currency) &&
-                Objects.equals(value, amount.value);
+        if (!Objects.equals(currency, amount.currency)) {
+            return false;
+        }
+        int scale = currency.getDefaultFractionDigits();
+        return Objects.equals(value.setScale(scale, HALF_UP), amount.value.setScale(scale, HALF_UP));
     }
 
     @Override

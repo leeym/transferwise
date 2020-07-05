@@ -6,17 +6,35 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 
+import static java.math.BigDecimal.ZERO;
+
 public class ConversionResponse {
-    ConversionId id;
-    String type;
-    String state;
-    Amount[] balancesAfter;
-    OffsetDateTime creationTime;
-    Step[] steps;
-    Amount sourceAmount;
-    Amount targetAmount;
-    BigDecimal rate;
-    Amount[] feeAmounts;
+    private ConversionId id;
+    private String type;
+    private String state;
+    private Amount[] balancesAfter;
+    private OffsetDateTime creationTime;
+    private Step[] steps;
+    private Amount sourceAmount;
+    private Amount targetAmount;
+    private BigDecimal rate;
+    private Amount[] feeAmounts;
+
+    public Amount getSourceAmount() {
+        return sourceAmount;
+    }
+
+    public Amount getTargetAmount() {
+        return targetAmount;
+    }
+
+    public Amount getFeeAmount() {
+        if (feeAmounts == null || feeAmounts.length == 0) {
+            return new Amount(sourceAmount.getCurrency(), ZERO);
+        } else {
+            return Arrays.stream(feeAmounts).reduce(Amount::add).get();
+        }
+    }
 
     @Override
     public String toString() {
