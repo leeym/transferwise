@@ -144,12 +144,24 @@ public class RebalanceCurrencies implements Callable<List<String>> {
 
         Account account = accountsApi.getAccount(profileId);
         AccountId accountId = account.getId();
-        List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
+        List<Amount> amounts = account.getBalances().stream()
+                .map(Balance::getAmount)
+                .filter(amount -> !amount.isZero())
+                .collect(Collectors.toList());
         Set<Currency> currencies = new HashSet<>();
         currencies.addAll(amounts.stream().map(Amount::getCurrency).collect(Collectors.toList()));
         currencies.addAll(optimalAllocation.keySet());
 
         Map<Currency, Map<Currency, Rate>> rates = new HashMap<>();
+        rates.computeIfAbsent(USD, k -> new HashMap<>()).put(USD, new Rate(USD, USD, 1));
+        for (Rate rate : ratesApi.getTargetRatesNow(USD)) {
+            if (rate.getSource() == null) {
+                continue;
+            }
+            rates.computeIfAbsent(rate.getSource(), k -> new HashMap<>()).put(USD, rate);
+            rates.computeIfAbsent(USD, k -> new HashMap<>()).put(rate.getSource(), rate.reverse());
+        }
+
         Map<Currency, Amount> existingAmounts = new HashMap<>();
         Map<Currency, Amount> equivalentAmounts = new HashMap<>();
         for (Currency currency : currencies) {
@@ -158,9 +170,6 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                     .findFirst()
                     .orElseGet(() -> new Amount(currency, ZERO));
             existingAmounts.put(currency, existingAmount);
-            Rate rate = ratesApi.getRateNow(currency, USD);
-            rates.computeIfAbsent(currency, k -> new HashMap<>()).put(USD, rate);
-            rates.computeIfAbsent(USD, k -> new HashMap<>()).put(currency, rate.reverse());
             Amount equivalentAmount = existingAmount.multiply(rates.get(currency).get(USD));
             equivalentAmounts.put(currency, equivalentAmount);
         }
@@ -189,7 +198,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         if (orders.isEmpty()) {
             return Collections.emptyList();
         }
-        orders.sort(Comparator.comparing(a -> a.multiply(rates.get(a.getCurrency()).get(USD))));
+        orders.sort(Comparator.comparing(amount -> amount.multiply(rates.get(amount.getCurrency()).get(USD))));
         CurrencyPairs pairs = accountsApi.getCurrencyPairs();
         for (Amount amount : orders) {
             Currency currency = amount.getCurrency();

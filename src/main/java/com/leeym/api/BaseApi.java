@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.leeym.common.ApiToken;
 import com.leeym.common.BaseUrl;
+import com.leeym.common.CurrencyTypeAdapter;
 import com.leeym.common.JavaTimeTypeAdapterFactory;
 import com.leeym.common.Stage;
 
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Currency;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -38,6 +40,7 @@ public class BaseApi {
                 .build();
         this.token = token;
         this.gson = new GsonBuilder()
+                .registerTypeAdapter(Currency.class, new CurrencyTypeAdapter())
                 .registerTypeAdapterFactory(new JavaTimeTypeAdapterFactory())
                 .setPrettyPrinting()
                 .create();

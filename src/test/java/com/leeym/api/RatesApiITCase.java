@@ -39,7 +39,6 @@ class RatesApiITCase extends BaseApiITCase {
         }
     }
 
-    @Disabled
     @Test
     public void getTargetRatesNow() {
         List<Rate> rates = api.getTargetRatesNow(USD);
