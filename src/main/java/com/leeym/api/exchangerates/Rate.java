@@ -15,6 +15,10 @@ public class Rate {
         this(source, target, new BigDecimal(rate), OffsetDateTime.now());
     }
 
+    public Rate(Currency source, Currency target, double rate, OffsetDateTime time) {
+        this(source, target, new BigDecimal(rate), time);
+    }
+
     public Rate(Currency source, Currency target, BigDecimal rate) {
         this(source, target, rate, OffsetDateTime.now());
     }
@@ -50,5 +54,9 @@ public class Rate {
 
     public OffsetDateTime getTime() {
         return time;
+    }
+
+    public Rate reverse() {
+        return new Rate(target, source, 1 / rate.doubleValue(), time);
     }
 }
