@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 
-
 class RebalanceCurrenciesITCase extends BaseApiITCase {
 
     AccountsApi accountsApi = new AccountsApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
@@ -17,8 +16,7 @@ class RebalanceCurrenciesITCase extends BaseApiITCase {
 
     @Test
     public void testCall() {
-        RebalanceCurrencies rebalanceCurrencies =
-                new RebalanceCurrencies(SANDBOX_PERSONAL_PROFILE_ID, accountsApi, ratesApi, quotesApi);
-        rebalanceCurrencies.call();
+        RebalanceCurrencies r = new RebalanceCurrencies(SANDBOX_PERSONAL_PROFILE_ID, accountsApi, ratesApi, quotesApi);
+        r.call();
     }
 }

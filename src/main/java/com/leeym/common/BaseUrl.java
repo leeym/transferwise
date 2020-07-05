@@ -8,6 +8,7 @@ public class BaseUrl extends FormattedString {
     public static final BaseUrl LIVE_BASEURL = new BaseUrl("https://api.transferwise.com", LIVE);
 
     Stage stage;
+
     public BaseUrl(String value, Stage stage) {
         super(value);
         this.stage = stage;
