@@ -176,7 +176,7 @@ class AmountTest {
     }
 
     @Test
-    public void validMultiply() {
+    public void validMultiplyRate() {
         Rate rate = new Rate(USD, EUR, 0.889284917);
         Amount source = new Amount(USD, new BigDecimal("1000"));
         Amount target = source.multiply(rate);
@@ -185,14 +185,14 @@ class AmountTest {
     }
 
     @Test
-    public void invalidMultiply() {
+    public void invalidMultiplyRate() {
         Rate rate = new Rate(USD, EUR, 0.889284917);
         Amount source = new Amount(EUR, new BigDecimal("1000"));
         assertThrows(IllegalArgumentException.class, () -> source.multiply(rate));
     }
 
     @Test
-    public void validDivide() {
+    public void validDivideRate() {
         Rate rate = new Rate(USD, EUR, 0.889284917);
         Amount source = new Amount(EUR, new BigDecimal("1000"));
         Amount target = source.divide(rate);
@@ -201,9 +201,16 @@ class AmountTest {
     }
 
     @Test
-    public void invalidDivide() {
+    public void invalidDivideRate() {
         Rate rate = new Rate(USD, EUR, 0.889284917);
         Amount source = new Amount(USD, new BigDecimal("1000"));
         assertThrows(IllegalArgumentException.class, () -> source.divide(rate));
+    }
+
+    @Test
+    public void divideDouble() {
+        Amount dividend = new Amount(USD, BigDecimal.TEN);
+        Amount divisor = new Amount(USD, BigDecimal.ONE);
+        assertEquals(10, dividend.divide(divisor));
     }
 }

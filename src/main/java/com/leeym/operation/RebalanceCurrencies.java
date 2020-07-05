@@ -1,6 +1,7 @@
 package com.leeym.operation;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.leeym.api.borderlessaccounts.Account;
 import com.leeym.api.borderlessaccounts.AccountId;
@@ -55,14 +56,15 @@ import static java.math.RoundingMode.HALF_UP;
 
 /**
  * existing:   the balances currently in the account
- * equivalent: the amount covered to USD
- * ideal:      the portfolio we want, though some currencies may not be supported. Unsupported ones go to USD.
- * optimal:    the actual one we can have
+ * equivalent: the existing amount covered into USD
+ * ideal:      the portfolio we want, though some currencies may be unsupported or unwanted..
+ * optimal:    the actual portfolio we can have
  */
 public class RebalanceCurrencies implements Callable<String> {
 
-    private final Logger logger = Logger.getAnonymousLogger();
+    private static final double THRESHOLD = 0.05;
 
+    private final Logger logger = Logger.getAnonymousLogger();
     // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
     private final Map<Currency, Double> idealAllocation = ImmutableMap.<Currency, Double>builder()
             .put(USD, 88.3)
@@ -88,6 +90,8 @@ public class RebalanceCurrencies implements Callable<String> {
             .put(TWD, 0.9)
             .build();
 
+    private final Set<Currency> unwantedCurrencies = ImmutableSet.of(CNY, HKD);
+
     private final AccountsApi accountsApi;
     private final RatesApi ratesApi;
     private final QuotesApi quotesApi;
@@ -105,10 +109,11 @@ public class RebalanceCurrencies implements Callable<String> {
     public String call() {
         List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
         final Map<Currency, Double> optimalAllocation = idealAllocation.entrySet().stream()
+                .filter(entry -> !unwantedCurrencies.contains(entry.getKey()))
                 .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Sets.SetView<Currency> unsupported = Sets.difference(idealAllocation.keySet(), optimalAllocation.keySet());
-        logger.info("Ignore unsupported currencies: " + unsupported);
+        logger.info("Ignore unsupported/unwanted currencies: " + unsupported);
         final Double optimalSum = optimalAllocation.values().stream().reduce(0D, Double::sum);
 
         Account account = accountsApi.getAccount(profileId);
@@ -138,15 +143,17 @@ public class RebalanceCurrencies implements Callable<String> {
         for (Currency currency : currencies) {
             Amount existingAmount = existingAmounts.get(currency);
             Amount equivalentAmount = equivalentAmounts.get(currency);
-            double existingPercentage =
-                    equivalentAmount.getValue().doubleValue() * 100 / equivalentSum.getValue().doubleValue();
-            double optimalPercentage = idealAllocation.getOrDefault(currency, 0D) * 100 / optimalSum;
+            double existingProportion = equivalentAmount.divide(equivalentSum);
+            double optimalProportion = optimalAllocation.getOrDefault(currency, 0D) / optimalSum;
             Amount optimalAmount = equivalentSum
-                    .multiply(new BigDecimal(optimalPercentage / 100))
+                    .multiply(new BigDecimal(optimalProportion))
                     .multiply(rates.get(USD).get(currency));
-            boolean balanced = existingPercentage > 0 && Math.abs(optimalPercentage - existingPercentage) < 1;
+            Amount deviationAmount = optimalAmount.subtract(existingAmount).abs();
+            boolean balanced = existingAmount.isPositive() && deviationAmount.divide(optimalAmount) < THRESHOLD;
             logger.info(String.format("Currency:%s, balanced: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
-                    currency, balanced, existingAmount, existingPercentage, optimalAmount, optimalPercentage));
+                    currency, balanced,
+                    existingAmount, existingProportion * 100,
+                    optimalAmount, optimalProportion * 100));
             if (!currency.equals(USD) && !balanced) {
                 orders.add(optimalAmount.subtract(existingAmount));
             }

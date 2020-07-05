@@ -55,6 +55,11 @@ public class Amount implements Comparable<Amount> {
         return new Amount(currency, value.divide(divisor, currency.getDefaultFractionDigits(), HALF_UP));
     }
 
+    public double divide(Amount that) {
+        Preconditions.checkArgument(currency.equals(that.currency), "Can't divide " + this + " by " + that);
+        return value.doubleValue() / that.getValue().doubleValue();
+    }
+
     public boolean isPositive() {
         return isGreaterThan(new Amount(currency, BigDecimal.ZERO));
     }
