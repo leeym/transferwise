@@ -1,6 +1,7 @@
 package com.leeym.common;
 
 import com.google.common.base.Preconditions;
+import com.leeym.api.exchangerates.Rate;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -31,8 +32,19 @@ public class Amount {
     }
 
     public Amount subtract(Amount that) {
-        Preconditions.checkArgument(currency.equals(that.currency), "Can't subtract " + that + " from " + that);
+        Preconditions.checkArgument(currency.equals(that.currency), "Can't subtract " + that + " from " + this);
         return new Amount(currency, value.subtract(that.value));
+    }
+
+    public Amount multiply(Rate rate) {
+        Preconditions.checkArgument(currency.equals(rate.getSource()), "Can't multiply " + this + " by " + rate);
+        return new Amount(rate.getTarget(), value.multiply(rate.getRate()));
+    }
+
+    public Amount divide(Rate rate) {
+        Preconditions.checkArgument(currency.equals(rate.getTarget()), "Can't divide " + this + " by " + rate);
+        return new Amount(rate.getSource(), value.divide(rate.getRate(), rate.getSource().getDefaultFractionDigits(),
+                HALF_UP));
     }
 
     public boolean isPositive() {

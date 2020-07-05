@@ -171,7 +171,7 @@ public class RebalanceCurrencies implements Callable<String> {
                 minAmount = pairs.get(currency).flatMap(s -> s.get(USD)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             } else {
                 // source: USD, target: currency
-                maxAmount = pairs.get(USD).map(c -> c.maxInvoiceAmount).orElse(ZERO);
+                maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount).orElse(ZERO);
                 minAmount = pairs.get(USD).flatMap(s -> s.get(currency)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             }
             if (value.compareTo(maxAmount) > 0) {

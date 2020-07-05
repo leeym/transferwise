@@ -6,10 +6,25 @@ import java.util.Currency;
 
 // https://api-docs.transferwise.com/#exchange-rates
 public class Rate {
-    private BigDecimal rate;
-    private Currency source;
-    private Currency target;
-    private OffsetDateTime time;
+    private final BigDecimal rate;
+    private final Currency source;
+    private final Currency target;
+    private final OffsetDateTime time;
+
+    public Rate(Currency source, Currency target, double rate) {
+        this(source, target, new BigDecimal(rate), OffsetDateTime.now());
+    }
+
+    public Rate(Currency source, Currency target, BigDecimal rate) {
+        this(source, target, rate, OffsetDateTime.now());
+    }
+
+    public Rate(Currency source, Currency target, BigDecimal rate, OffsetDateTime time) {
+        this.source = source;
+        this.target = target;
+        this.rate = rate;
+        this.time = time;
+    }
 
     @Override
     public String toString() {
