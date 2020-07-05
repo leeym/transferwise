@@ -10,7 +10,7 @@ import com.leeym.api.accounts.BalanceCurrency;
 import com.leeym.api.accounts.ConversionResponse;
 import com.leeym.api.accounts.CurrencyPairs;
 import com.leeym.api.profiles.ProfileId;
-import com.leeym.api.quotes.QuoteId;
+import com.leeym.api.quotes.Quote;
 import com.leeym.api.quotes.QuotesApi;
 import com.leeym.api.rates.Rate;
 import com.leeym.api.rates.RatesApi;
@@ -66,6 +66,7 @@ import static com.leeym.api.Currencies.TWD;
 import static com.leeym.api.Currencies.USD;
 import static com.leeym.api.Currencies.ZAR;
 import static com.leeym.api.accounts.Account.Balance;
+import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
 
@@ -122,6 +123,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
     private final RatesApi ratesApi;
     private final QuotesApi quotesApi;
     private final ProfileId profileId;
+    private final Map<Currency, Map<Currency, Rate>> rates;
 
     public RebalanceCurrencies(ProfileId profileId, AccountsApi accountsApi, RatesApi ratesApi,
                                QuotesApi quotesApi) {
@@ -129,41 +131,56 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         this.ratesApi = ratesApi;
         this.quotesApi = quotesApi;
         this.profileId = profileId;
+        this.rates = getRates();
     }
 
     @Override
     public List<String> call() {
+        Account account = accountsApi.getAccount(profileId);
+        List<Amount> amounts = account.getBalances().stream()
+                .map(Balance::getAmount)
+                .filter(Amount::isPositive)
+                .collect(Collectors.toList());
+        List<Amount> orders = evaluate(amounts);
+        convert(account.getId(), orders);
+        return orders.stream().map(Amount::toString).collect(Collectors.toList());
+    }
+
+    private Map<Currency, Map<Currency, Rate>> getRates() {
+        assert ratesApi != null;
+        Map<Currency, Map<Currency, Rate>> map = new HashMap<>();
+        map.computeIfAbsent(USD, k -> new HashMap<>()).put(USD, new Rate(USD, USD, ONE));
+        for (Rate rate : ratesApi.getTargetRatesNow(USD)) {
+            Currency currency = rate.getSource();
+            if (currency != null) {
+                map.computeIfAbsent(currency, k -> new HashMap<>()).put(USD, rate);
+                map.computeIfAbsent(USD, k -> new HashMap<>()).put(currency, rate.reverse());
+            }
+        }
+        return map;
+    }
+
+    private Map<Currency, Double> getOptimalAllocation() {
         List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
-        final Map<Currency, Double> optimalAllocation = IDEAL_ALLOCATION.entrySet().stream()
+        Map<Currency, Double> optimalAllocation = IDEAL_ALLOCATION.entrySet().stream()
                 .filter(entry -> !UNWANTED_CURRENCIES.contains(entry.getKey()))
                 .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_ALLOCATION.keySet(), optimalAllocation.keySet());
         logger.info("Ignore unsupported/unwanted currencies: " + unsupported);
-        final Double optimalSum = optimalAllocation.values().stream().reduce(0D, Double::sum);
+        return optimalAllocation;
+    }
 
-        Account account = accountsApi.getAccount(profileId);
-        AccountId accountId = account.getId();
-        List<Amount> amounts = account.getBalances().stream()
-                .map(Balance::getAmount)
-                .filter(amount -> !amount.isZero())
-                .collect(Collectors.toList());
+    private List<Amount> evaluate(List<Amount> amounts) {
         if (amounts.isEmpty()) {
             return Collections.emptyList();
         }
+        final Map<Currency, Double> optimalAllocation = getOptimalAllocation();
+        final Double optimalSum = optimalAllocation.values().stream().reduce(0D, Double::sum);
+
         Set<Currency> currencies = new HashSet<>();
         currencies.addAll(amounts.stream().map(Amount::getCurrency).collect(Collectors.toList()));
         currencies.addAll(optimalAllocation.keySet());
-
-        Map<Currency, Map<Currency, Rate>> rates = new HashMap<>();
-        rates.computeIfAbsent(USD, k -> new HashMap<>()).put(USD, new Rate(USD, USD, 1));
-        for (Rate rate : ratesApi.getTargetRatesNow(USD)) {
-            if (rate.getSource() == null) {
-                continue;
-            }
-            rates.computeIfAbsent(rate.getSource(), k -> new HashMap<>()).put(USD, rate);
-            rates.computeIfAbsent(USD, k -> new HashMap<>()).put(rate.getSource(), rate.reverse());
-        }
 
         Map<Currency, Amount> existingAmounts = new HashMap<>();
         Map<Currency, Amount> equivalentAmounts = new HashMap<>();
@@ -200,8 +217,12 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             }
         }
         logger.info("Account total value: " + equivalentSum);
+        return orders;
+    }
+
+    void convert(AccountId accountId, List<Amount> orders) {
         if (orders.isEmpty()) {
-            return Collections.emptyList();
+            return;
         }
         orders.sort(Comparator.comparing(amount -> amount.multiply(rates.get(amount.getCurrency()).get(USD))));
         CurrencyPairs pairs = accountsApi.getCurrencyPairs();
@@ -234,19 +255,18 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 continue;
             }
             value = value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
-            final QuoteId quoteId;
+            final Quote quote;
             if (amount.isNegative()) {
-                quoteId = quotesApi.sellSourceToTarget(profileId, currency, value, USD).getId();
+                quote = quotesApi.sellSourceToTarget(profileId, currency, value, USD);
             } else if (amount.isPositive()) {
-                quoteId = quotesApi.buyTargetFromSource(profileId, USD, currency, value).getId();
+                quote = quotesApi.buyTargetFromSource(profileId, USD, currency, value);
             } else {
                 continue;
             }
-            assert !quoteId.toString().isEmpty();
-            ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quoteId);
+            assert !quote.hasErrors();
+            ConversionResponse response = accountsApi.executeQuoteAndConvert(accountId, quote.getId());
             logger.info(String.format("%s = %s + %s", response.getSourceAmount(), response.getFeeAmount(),
                     response.getTargetAmount()));
         }
-        return orders.stream().map(Amount::toString).collect(Collectors.toList());
     }
 }

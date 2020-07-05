@@ -18,7 +18,7 @@ class QuotesApiITCase extends BaseApiITCase {
     @Test
     public void buyTargetFromSource() {
         BigDecimal amount = new BigDecimal("600");
-        QuoteResponse response = api.buyTargetFromSource(SANDBOX_PERSONAL_PROFILE_ID, EUR, GBP, amount);
+        Quote response = api.buyTargetFromSource(SANDBOX_PERSONAL_PROFILE_ID, EUR, GBP, amount);
         assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.getProfile());
         assertEquals(EUR, response.getSource());
         assertEquals(GBP, response.getTarget());
@@ -30,7 +30,7 @@ class QuotesApiITCase extends BaseApiITCase {
     @Test
     public void sellSourceToTarget() {
         BigDecimal amount = new BigDecimal("600");
-        QuoteResponse response = api.sellSourceToTarget(SANDBOX_PERSONAL_PROFILE_ID, GBP, amount, EUR);
+        Quote response = api.sellSourceToTarget(SANDBOX_PERSONAL_PROFILE_ID, GBP, amount, EUR);
         assertEquals(SANDBOX_PERSONAL_PROFILE_ID, response.getProfile());
         assertEquals(GBP, response.getSource());
         assertEquals(amount.longValue(), response.getSourceAmount().longValue());

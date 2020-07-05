@@ -12,7 +12,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QuoteResponse {
+public class Quote {
     private QuoteId id;
     private Currency source;
     private Currency target;
