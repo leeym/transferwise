@@ -1,9 +1,9 @@
 package com.leeym.operation;
 
 import com.leeym.api.BaseApiITCase;
-import com.leeym.api.borderlessaccounts.AccountsApi;
-import com.leeym.api.exchangerates.RatesApi;
+import com.leeym.api.accounts.AccountsApi;
 import com.leeym.api.quotes.QuotesApi;
+import com.leeym.api.rates.RatesApi;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

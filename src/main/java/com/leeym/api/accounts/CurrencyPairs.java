@@ -1,4 +1,4 @@
-package com.leeym.api.borderlessaccounts;
+package com.leeym.api.accounts;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

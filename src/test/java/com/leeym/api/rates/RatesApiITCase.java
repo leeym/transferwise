@@ -1,7 +1,6 @@
-package com.leeym.api;
+package com.leeym.api.rates;
 
-import com.leeym.api.exchangerates.Rate;
-import com.leeym.api.exchangerates.RatesApi;
+import com.leeym.api.BaseApiITCase;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

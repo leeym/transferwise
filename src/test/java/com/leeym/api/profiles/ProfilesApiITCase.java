@@ -1,14 +1,12 @@
-package com.leeym.api;
+package com.leeym.api.profiles;
 
-import com.leeym.api.userprofiles.Profile;
-import com.leeym.api.userprofiles.ProfilesApi;
-import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.api.BaseApiITCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.leeym.api.userprofiles.Profile.Type.business;
-import static com.leeym.api.userprofiles.Profile.Type.personal;
+import static com.leeym.api.profiles.Profile.Type.business;
+import static com.leeym.api.profiles.Profile.Type.personal;
 import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

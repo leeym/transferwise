@@ -1,7 +1,7 @@
 package com.leeym.api.quotes;
 
-import com.leeym.api.userprofiles.Profile;
-import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.api.profiles.Profile;
+import com.leeym.api.profiles.ProfileId;
 import com.leeym.api.users.UserId;
 
 import java.math.BigDecimal;

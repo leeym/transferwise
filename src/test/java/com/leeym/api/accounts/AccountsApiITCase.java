@@ -1,6 +1,6 @@
-package com.leeym.api;
+package com.leeym.api.accounts;
 
-import com.leeym.api.borderlessaccounts.AccountsApi;
+import com.leeym.api.BaseApiITCase;
 import org.junit.jupiter.api.Test;
 
 import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;

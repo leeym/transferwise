@@ -1,7 +1,7 @@
 package com.leeym.common;
 
 import com.google.common.base.Preconditions;
-import com.leeym.api.exchangerates.Rate;
+import com.leeym.api.rates.Rate;
 
 import java.math.BigDecimal;
 import java.util.Currency;

@@ -1,4 +1,4 @@
-package com.leeym.api.userprofiles;
+package com.leeym.api.profiles;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;

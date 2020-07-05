@@ -1,4 +1,4 @@
-package com.leeym.api.userprofiles;
+package com.leeym.api.profiles;
 
 import com.leeym.common.PhoneNumber;
 
@@ -21,11 +21,6 @@ public class Profile {
         return details;
     }
 
-    public enum Type {
-        personal,
-        business,
-    }
-
     @Override
     public String toString() {
         return "Profile{" +
@@ -33,6 +28,11 @@ public class Profile {
                 ", type='" + type + '\'' +
                 ", details=" + details +
                 '}';
+    }
+
+    public enum Type {
+        personal,
+        business,
     }
 
     private static class Details {

@@ -1,8 +1,8 @@
-package com.leeym.api.borderlessaccounts;
+package com.leeym.api.accounts;
 
 import com.leeym.api.BaseApi;
+import com.leeym.api.profiles.ProfileId;
 import com.leeym.api.quotes.QuoteId;
-import com.leeym.api.userprofiles.ProfileId;
 import com.leeym.common.ApiToken;
 import com.leeym.common.BaseUrl;
 

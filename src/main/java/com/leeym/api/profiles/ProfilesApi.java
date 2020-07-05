@@ -1,4 +1,4 @@
-package com.leeym.api.userprofiles;
+package com.leeym.api.profiles;
 
 import com.leeym.api.BaseApi;
 import com.leeym.common.ApiToken;

@@ -1,4 +1,4 @@
-package com.leeym.api.exchangerates;
+package com.leeym.api.rates;
 
 import com.leeym.api.ApiRequest;
 

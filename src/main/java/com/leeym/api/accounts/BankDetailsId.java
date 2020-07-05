@@ -1,4 +1,4 @@
-package com.leeym.api.borderlessaccounts;
+package com.leeym.api.accounts;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;

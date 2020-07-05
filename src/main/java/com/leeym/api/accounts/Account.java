@@ -1,6 +1,6 @@
-package com.leeym.api.borderlessaccounts;
+package com.leeym.api.accounts;
 
-import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.api.profiles.ProfileId;
 import com.leeym.common.Amount;
 import com.leeym.common.IBAN;
 import com.leeym.common.Swift;

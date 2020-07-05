@@ -1,6 +1,6 @@
 package com.leeym.api.quotes;
 
-import com.leeym.api.userprofiles.ProfileId;
+import com.leeym.api.profiles.ProfileId;
 
 import java.math.BigDecimal;
 import java.util.Currency;

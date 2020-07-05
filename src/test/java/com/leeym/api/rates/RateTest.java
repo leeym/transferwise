@@ -1,4 +1,4 @@
-package com.leeym.api.exchangerates;
+package com.leeym.api.rates;
 
 import org.junit.jupiter.api.Test;
 

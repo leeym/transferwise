@@ -1,6 +1,6 @@
 package com.leeym.common;
 
-import com.leeym.api.exchangerates.Rate;
+import com.leeym.api.rates.Rate;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
