@@ -142,8 +142,8 @@ public class RebalanceCurrencies implements Callable<String> {
                     equivalentAmount.getValue().doubleValue() * 100 / equivalentSum.getValue().doubleValue();
             double optimalPercentage = idealAllocation.getOrDefault(currency, 0D) * 100 / optimalSum;
             Amount optimalAmount = equivalentSum
-                    .multiply(rates.get(USD).get(currency))
-                    .multiply(new BigDecimal(optimalPercentage));
+                    .multiply(new BigDecimal(optimalPercentage / 100))
+                    .multiply(rates.get(USD).get(currency));
             boolean balanced = existingPercentage > 0 && Math.abs(optimalPercentage - existingPercentage) < 1;
             logger.info(String.format("Currency:%s, balanced: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
                     currency, balanced, existingAmount, existingPercentage, optimalAmount, optimalPercentage));
