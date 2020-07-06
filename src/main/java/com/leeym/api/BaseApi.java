@@ -50,23 +50,11 @@ public class BaseApi {
         URI uri = URI.create(baseUrl + path);
         logger.info(">>> GET " + uri);
         HttpRequest request = HttpRequest.newBuilder()
-                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .GET()
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .build();
-        final String body;
-        try {
-            body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        JsonElement jsonElement = JsonParser.parseString(body);
-        if (jsonElement.isJsonObject()) {
-            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonObject()));
-        } else if (jsonElement.isJsonArray()) {
-            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonArray()));
-        }
-        return body;
+        return send(request);
     }
 
     protected String post(String path, Object object) {
@@ -74,24 +62,30 @@ public class BaseApi {
         String json = gson.toJson(object);
         logger.info(">>> POST " + uri + "\n" + json);
         HttpRequest request = HttpRequest.newBuilder()
-                .method("POST", HttpRequest.BodyPublishers.ofString(json))
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .uri(uri)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
                 .header("X-idempotence-uuid", UUID.randomUUID().toString())
                 .build();
-        final String body;
+        return send(request);
+    }
+
+    protected String send(HttpRequest request) {
+        final long start = System.currentTimeMillis();
         try {
-            body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            String body = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            final long end = System.currentTimeMillis();
+            JsonElement jsonElement = JsonParser.parseString(body);
+            if (jsonElement.isJsonObject()) {
+                logger.info("<<< " + (end - start) + " ms\n" + gson.toJson(jsonElement.getAsJsonObject()));
+            } else if (jsonElement.isJsonArray()) {
+                logger.info("<<< " + (end - start) + " ms\n" + gson.toJson(jsonElement.getAsJsonArray()));
+            }
+            return body;
         } catch (IOException | InterruptedException e) {
+            logger.info((System.currentTimeMillis() - start) + " ms");
             throw new RuntimeException(e);
         }
-        JsonElement jsonElement = JsonParser.parseString(body);
-        if (jsonElement.isJsonObject()) {
-            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonObject()));
-        } else if (jsonElement.isJsonArray()) {
-            logger.info("<<<\n" + gson.toJson(jsonElement.getAsJsonArray()));
-        }
-        return body;
     }
 }
