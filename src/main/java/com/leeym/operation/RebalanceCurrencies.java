@@ -177,6 +177,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 orders.add(optimalAmount.subtract(existingAmount));
             }
         }
+        orders.sort(Comparator.comparing(amount -> amount.multiply(rates.get(amount.getCurrency()).get(USD))));
         return orders;
     }
 
@@ -184,7 +185,6 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         if (orders.isEmpty()) {
             return;
         }
-        orders.sort(Comparator.comparing(amount -> amount.multiply(rates.get(amount.getCurrency()).get(USD))));
         CurrencyPairs pairs = accountsApi.getCurrencyPairs();
         for (Amount amount : orders) {
             Currency currency = amount.getCurrency();
