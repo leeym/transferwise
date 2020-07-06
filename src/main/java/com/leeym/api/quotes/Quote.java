@@ -112,7 +112,7 @@ public class Quote {
         }
     }
 
-    static class Error {
+    public static class Error {
         String code;
         String message;
         String targetAmount;

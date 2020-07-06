@@ -20,8 +20,8 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 public class BaseApi {
-    private final Logger logger = Logger.getAnonymousLogger();
     protected final Gson gson;
+    private final Logger logger = Logger.getGlobal();
     private final BaseUrl baseUrl;
     private final ApiToken token;
     private final HttpClient client;

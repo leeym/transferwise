@@ -7,6 +7,7 @@ import com.leeym.common.Swift;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +25,10 @@ public class Account {
     private Balance[] balances;
 
     public List<Balance> getBalances() {
-        return Arrays.stream(balances).collect(Collectors.toList());
+        return Arrays.stream(balances)
+                .filter(balance -> balance.amount.isPositive())
+                .sorted(Comparator.comparing(balance -> balance.getAmount().getCurrency().getCurrencyCode()))
+                .collect(Collectors.toList());
     }
 
     public AccountId getId() {

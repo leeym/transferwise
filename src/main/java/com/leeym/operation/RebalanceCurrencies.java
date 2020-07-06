@@ -17,7 +17,6 @@ import com.leeym.api.rates.RatesApi;
 import com.leeym.common.Amount;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.HashMap;
@@ -27,48 +26,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.leeym.api.Currencies.AED;
-import static com.leeym.api.Currencies.AUD;
-import static com.leeym.api.Currencies.BRL;
-import static com.leeym.api.Currencies.CAD;
-import static com.leeym.api.Currencies.CHF;
-import static com.leeym.api.Currencies.CLP;
 import static com.leeym.api.Currencies.CNY;
-import static com.leeym.api.Currencies.COP;
-import static com.leeym.api.Currencies.CZK;
-import static com.leeym.api.Currencies.DKK;
 import static com.leeym.api.Currencies.EUR;
 import static com.leeym.api.Currencies.GBP;
 import static com.leeym.api.Currencies.HKD;
-import static com.leeym.api.Currencies.HUF;
-import static com.leeym.api.Currencies.IDR;
-import static com.leeym.api.Currencies.ILS;
-import static com.leeym.api.Currencies.INR;
 import static com.leeym.api.Currencies.JPY;
-import static com.leeym.api.Currencies.KRW;
-import static com.leeym.api.Currencies.MXN;
-import static com.leeym.api.Currencies.MYR;
-import static com.leeym.api.Currencies.NOK;
-import static com.leeym.api.Currencies.NZD;
 import static com.leeym.api.Currencies.PHP;
-import static com.leeym.api.Currencies.PLN;
-import static com.leeym.api.Currencies.RON;
-import static com.leeym.api.Currencies.RUB;
-import static com.leeym.api.Currencies.SAR;
-import static com.leeym.api.Currencies.SEK;
-import static com.leeym.api.Currencies.SGD;
-import static com.leeym.api.Currencies.THB;
-import static com.leeym.api.Currencies.TRY;
 import static com.leeym.api.Currencies.TWD;
 import static com.leeym.api.Currencies.USD;
-import static com.leeym.api.Currencies.ZAR;
 import static com.leeym.api.accounts.Account.Balance;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
+import static java.util.logging.Level.CONFIG;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 
 /**
  * existing:   the balances currently in the account
@@ -80,45 +57,16 @@ public class RebalanceCurrencies implements Callable<List<String>> {
 
     private static final double THRESHOLD = 0.05;
     private static final Set<Currency> UNWANTED_CURRENCIES = ImmutableSet.of(CNY, HKD);
-    // https://en.wikipedia.org/wiki/Template:Most_traded_currencies
     private static final Map<Currency, Double> IDEAL_PORTFOLIO = ImmutableMap.<Currency, Double>builder()
-            .put(USD, 88.3) // 1
-            .put(EUR, 32.3) // 2
-            .put(JPY, 16.8) // 3
-            .put(GBP, 12.8) // 4
-            .put(AUD, 6.8)  // 5
-            .put(CAD, 5.0)  // 6
-            .put(CHF, 5.0)  // 7
-            .put(CNY, 4.3)  // 8
-            .put(HKD, 3.5)  // 9
-            .put(NZD, 2.1)  // 10
-            .put(SEK, 2.0)  // 11
-            .put(KRW, 2.0)  // 12
-            .put(SGD, 1.8)  // 13
-            .put(NOK, 1.8)  // 14
-            .put(MXN, 1.7)  // 15
-            .put(INR, 1.7)  // 16
-            .put(RUB, 1.1)  // 17
-            .put(ZAR, 1.1)  // 18
-            .put(TRY, 1.1)  // 19
-            .put(BRL, 1.1)  // 20
-            .put(TWD, 0.9)  // 21
-            .put(DKK, 0.6)  // 22
-            .put(PLN, 0.6)  // 23
-            .put(THB, 0.5)  // 24
-            .put(IDR, 0.4)  // 25
-            .put(HUF, 0.4)  // 26
-            .put(CZK, 0.4)  // 27
-            .put(ILS, 0.3)  // 28
-            .put(CLP, 0.3)  // 29
-            .put(PHP, 0.3)  // 30
-            .put(AED, 0.2)  // 31
-            .put(COP, 0.2)  // 32
-            .put(SAR, 0.2)  // 33
-            .put(MYR, 0.1)  // 34
-            .put(RON, 0.1)  // 35
+            .put(USD, 30.0)
+            .put(GBP, 30.0)
+            .put(EUR, 20.0)
+            .put(JPY, 10.0)
+            .put(TWD, 5.0)
+            .put(HKD, 5.0)
             .build();
-    private final Logger logger = Logger.getAnonymousLogger();
+    private final Logger logger = Logger.getGlobal();
+    private final List<String> logs = new LinkedList<>();
     private final AccountsApi accountsApi;
     private final RatesApi ratesApi;
     private final QuotesApi quotesApi;
@@ -137,13 +85,20 @@ public class RebalanceCurrencies implements Callable<List<String>> {
     @Override
     public List<String> call() {
         Account account = accountsApi.getAccount(profileId);
-        List<Amount> amounts = account.getBalances().stream()
-                .map(Balance::getAmount)
-                .filter(Amount::isPositive)
-                .collect(Collectors.toList());
-        List<Amount> orders = evaluate(amounts);
+        log(SEVERE, "Before: " + calculate(account));
+        List<Amount> orders = evaluate(account);
+        log(INFO, orders.toString());
         convert(account.getId(), orders);
-        return orders.stream().map(Amount::toString).collect(Collectors.toList());
+        log(SEVERE, "After : " + calculate(accountsApi.getAccount(profileId)));
+        return logs;
+    }
+
+    private Amount calculate(Account account) {
+        return account.getBalances().stream()
+                .map(Balance::getAmount)
+                .map(amount -> amount.multiply(rates.get(amount.getCurrency()).get(USD)))
+                .reduce(Amount::add)
+                .orElse(new Amount(USD, ZERO));
     }
 
     private Map<Currency, Map<Currency, Rate>> getRates() {
@@ -162,18 +117,22 @@ public class RebalanceCurrencies implements Callable<List<String>> {
 
     private Map<Currency, Double> getOptimalPortfolio() {
         List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
+        log(CONFIG, "IDEAL_PORTFOLIO: " + IDEAL_PORTFOLIO);
+        log(CONFIG, "UNWANTED_CURRENCIES: " + UNWANTED_CURRENCIES);
         Map<Currency, Double> optimalPortfolio = IDEAL_PORTFOLIO.entrySet().stream()
                 .filter(entry -> !UNWANTED_CURRENCIES.contains(entry.getKey()))
                 .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_PORTFOLIO.keySet(), optimalPortfolio.keySet());
-        logger.info("Ignore unsupported/unwanted currencies: " + unsupported);
+        log(INFO, "Ignore unsupported/unwanted currencies: " + unsupported);
         return optimalPortfolio;
     }
 
-    private List<Amount> evaluate(List<Amount> amounts) {
+    private List<Amount> evaluate(Account account) {
+        List<Amount> orders = new LinkedList<>();
+        List<Amount> amounts = account.getBalances().stream().map(Balance::getAmount).collect(Collectors.toList());
         if (amounts.isEmpty()) {
-            return Collections.emptyList();
+            return orders;
         }
         final Map<Currency, Double> optimalPortfolio = getOptimalPortfolio();
         final Double optimalSum = optimalPortfolio.values().stream().reduce(0D, Double::sum);
@@ -195,8 +154,10 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         }
 
         Amount equivalentSum = equivalentAmounts.values().stream().reduce(new Amount(USD, ZERO), Amount::add);
-        List<Amount> orders = new LinkedList<>();
-        for (Currency currency : currencies) {
+        List<Currency> sortedCurrencies = currencies.stream()
+                .sorted(Comparator.comparing(Currency::getCurrencyCode))
+                .collect(Collectors.toList());
+        for (Currency currency : sortedCurrencies) {
             Amount existingAmount = existingAmounts.get(currency);
             Amount equivalentAmount = equivalentAmounts.get(currency);
             double existingProportion = equivalentAmount.divide(equivalentSum);
@@ -207,8 +168,8 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             Amount deviationAmount = optimalAmount.subtract(existingAmount).abs();
             boolean balanced = deviationAmount.getValue().abs().intValue() < 1;
             balanced |= deviationAmount.divide(optimalAmount) < THRESHOLD;
-            logger.info(String.format(
-                    "Currency:%s, balanced: %s, equivalent: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)\n",
+            log(INFO, String.format(
+                    "Currency:%s, balanced: %s, equivalent: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)",
                     currency, balanced, equivalentAmount,
                     existingAmount, existingProportion * 100,
                     optimalAmount, optimalProportion * 100));
@@ -216,7 +177,6 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 orders.add(optimalAmount.subtract(existingAmount));
             }
         }
-        logger.info("Account total value: " + equivalentSum);
         return orders;
     }
 
@@ -233,11 +193,11 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             final BigDecimal minAmount;
             if (amount.isNegative()) {
                 // source: currency, target: USD
-                maxAmount = pairs.get(currency).map(s -> s.maxInvoiceAmount).orElse(ZERO);
+                maxAmount = pairs.get(currency).map(s -> s.maxInvoiceAmount).orElse(BigDecimal.valueOf(Long.MAX_VALUE));
                 minAmount = pairs.get(currency).flatMap(s -> s.get(USD)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             } else {
                 // source: USD, target: currency
-                maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount).orElse(ZERO);
+                maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount).orElse(BigDecimal.valueOf(Long.MAX_VALUE));
                 minAmount = pairs.get(USD).flatMap(s -> s.get(currency)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             }
 
@@ -247,11 +207,11 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             }
 
             if (value.compareTo(maxAmount) > 0) {
-                logger.info(String.format("Reduce %s from %s to %s\n", currency, value, maxAmount));
+                log(WARNING, String.format("Reduce %s from %s to %s", currency, value, maxAmount));
                 value = value.min(maxAmount);
             }
             if (value.compareTo(minAmount) < 0) {
-                logger.info(String.format("Skip %s of %s since it is below %s\n", currency, value, minAmount));
+                log(WARNING, String.format("Skip %s of %s since it is below %s", currency, value, minAmount));
                 continue;
             }
             value = value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
@@ -263,10 +223,18 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             } else {
                 continue;
             }
-            assert !quote.hasErrors();
-            Conversion response = accountsApi.executeQuoteAndConvert(accountId, quote.getId());
-            logger.info(String.format("%s = %s + %s", response.getSourceAmount(), response.getFeeAmount(),
-                    response.getTargetAmount()));
+            if (quote.hasErrors()) {
+                log(SEVERE, quote.getErrors().stream().map(Quote.Error::getMessage).collect(Collectors.joining()));
+            } else {
+                Conversion response = accountsApi.executeQuoteAndConvert(accountId, quote.getId());
+                log(INFO, String.format("%s = %s + %s", response.getSourceAmount(), response.getFeeAmount(),
+                        response.getTargetAmount()));
+            }
         }
+    }
+
+    void log(Level level, String msg) {
+        logs.add(msg);
+        logger.log(level, msg);
     }
 }

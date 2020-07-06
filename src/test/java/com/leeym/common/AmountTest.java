@@ -4,7 +4,6 @@ import com.leeym.api.rates.Rate;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.logging.Logger;
 
 import static com.leeym.api.Currencies.AUD;
 import static com.leeym.api.Currencies.CAD;
@@ -30,7 +29,6 @@ class AmountTest {
     private static final Amount ONE_USD = new Amount(USD, BigDecimal.ONE);
     private static final Amount TWO_USD = new Amount(USD, new BigDecimal("2"));
     private static final Amount ONE_EUR = new Amount(EUR, BigDecimal.ONE);
-    private final Logger logger = Logger.getAnonymousLogger();
 
     @Test
     public void isPositive() {

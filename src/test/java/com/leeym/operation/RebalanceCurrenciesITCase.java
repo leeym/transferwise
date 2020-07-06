@@ -7,13 +7,11 @@ import com.leeym.api.rates.RatesApi;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.leeym.common.BaseUrl.SANDBOX_BASEURL;
 
 class RebalanceCurrenciesITCase extends BaseApiITCase {
 
-    private final Logger logger = Logger.getAnonymousLogger();
     AccountsApi accountsApi = new AccountsApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
     RatesApi ratesApi = new RatesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
     QuotesApi quotesApi = new QuotesApi(SANDBOX_BASEURL, SANDBOX_API_TOKEN);
@@ -21,7 +19,8 @@ class RebalanceCurrenciesITCase extends BaseApiITCase {
     @Test
     public void testCall() {
         RebalanceCurrencies r = new RebalanceCurrencies(SANDBOX_PERSONAL_PROFILE_ID, accountsApi, ratesApi, quotesApi);
-        List<String> orders = r.call();
-        logger.info(orders.toString());
+        List<String> logs = r.call();
+        System.err.println("=".repeat(120));
+        System.err.println(String.join("\n", logs));
     }
 }
