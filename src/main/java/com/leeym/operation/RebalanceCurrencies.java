@@ -170,7 +170,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
             balanced |= deviationAmount.divide(optimalAmount) < THRESHOLD;
             log(INFO, String.format(
                     "Currency:%s, balanced: %s, equivalent: %s, existing: %s (%.2f%%), optimal: %s (%.2f%%)",
-                    currency, balanced, equivalentAmount,
+                    currency, currency.equals(USD) ? "always" : balanced, equivalentAmount,
                     existingAmount, existingProportion * 100,
                     optimalAmount, optimalProportion * 100));
             if (!currency.equals(USD) && !balanced) {
