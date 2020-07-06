@@ -17,6 +17,7 @@ import com.leeym.api.rates.RatesApi;
 import com.leeym.common.Amount;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.HashMap;
@@ -206,12 +207,17 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 maxAmount = maxAmount.min(new BigDecimal("480000"));
             }
 
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            numberFormat.setMinimumFractionDigits(currency.getDefaultFractionDigits());
+            numberFormat.setMaximumFractionDigits(currency.getDefaultFractionDigits());
             if (value.compareTo(maxAmount) > 0) {
-                log(WARNING, String.format("Reduce %s from %s to %s", currency, value, maxAmount));
+                log(WARNING, String.format("Reduce %s from %s to %s", currency, numberFormat.format(value),
+                        numberFormat.format(maxAmount)));
                 value = value.min(maxAmount);
             }
             if (value.compareTo(minAmount) < 0) {
-                log(WARNING, String.format("Skip %s of %s since it is below %s", currency, value, minAmount));
+                log(WARNING, String.format("Skip %s of %s since it is below %s", currency, numberFormat.format(value),
+                        numberFormat.format(minAmount)));
                 continue;
             }
             value = value.setScale(currency.getDefaultFractionDigits(), HALF_UP);

@@ -77,7 +77,7 @@ class AmountTest {
         Amount amount = new Amount(USD, VALUE);
         assertEquals(USD, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("US$ 1234.57", amount.toString());
+        assertEquals("US$ 1,234.57", amount.toString());
     }
 
     @Test
@@ -85,7 +85,7 @@ class AmountTest {
         Amount amount = new Amount(JPY, VALUE);
         assertEquals(JPY, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("¥ 1235", amount.toString());
+        assertEquals("¥ 1,235", amount.toString());
     }
 
     @Test
@@ -93,7 +93,7 @@ class AmountTest {
         Amount amount = new Amount(GBP, VALUE);
         assertEquals(GBP, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("£ 1234.57", amount.toString());
+        assertEquals("£ 1,234.57", amount.toString());
     }
 
     @Test
@@ -101,7 +101,7 @@ class AmountTest {
         Amount amount = new Amount(EUR, VALUE);
         assertEquals(EUR, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("€ 1234.57", amount.toString());
+        assertEquals("€ 1,234.57", amount.toString());
     }
 
     @Test
@@ -109,7 +109,7 @@ class AmountTest {
         Amount amount = new Amount(SGD, VALUE);
         assertEquals(SGD, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("SGD 1234.57", amount.toString());
+        assertEquals("SGD 1,234.57", amount.toString());
     }
 
     @Test
@@ -117,7 +117,7 @@ class AmountTest {
         Amount amount = new Amount(TWD, VALUE);
         assertEquals(TWD, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("$ 1234.57", amount.toString());
+        assertEquals("$ 1,234.57", amount.toString());
     }
 
 
@@ -126,7 +126,7 @@ class AmountTest {
         Amount amount = new Amount(CAD, VALUE);
         assertEquals(CAD, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("CA$ 1234.57", amount.toString());
+        assertEquals("CA$ 1,234.57", amount.toString());
     }
 
     @Test
@@ -134,7 +134,7 @@ class AmountTest {
         Amount amount = new Amount(AUD, VALUE);
         assertEquals(AUD, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("AU$ 1234.57", amount.toString());
+        assertEquals("AU$ 1,234.57", amount.toString());
     }
 
     @Test
@@ -142,7 +142,7 @@ class AmountTest {
         Amount amount = new Amount(KRW, VALUE);
         assertEquals(KRW, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("￦ 1235", amount.toString());
+        assertEquals("￦ 1,235", amount.toString());
     }
 
     @Test
@@ -150,7 +150,7 @@ class AmountTest {
         Amount amount = new Amount(ILS, VALUE);
         assertEquals(ILS, amount.getCurrency());
         assertEquals(VALUE, amount.getValue());
-        assertEquals("₪ 1234.57", amount.toString());
+        assertEquals("₪ 1,234.57", amount.toString());
     }
 
     @Test
@@ -195,7 +195,7 @@ class AmountTest {
         Amount source = new Amount(EUR, new BigDecimal("1000"));
         Amount target = source.divide(rate);
         assertEquals(USD, target.getCurrency());
-        assertEquals("US$ 1124.50", target.toString());
+        assertEquals("US$ 1,124.50", target.toString());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.leeym.api.rates.Rate;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Objects;
 
@@ -92,7 +93,10 @@ public class Amount implements Comparable<Amount> {
 
     @Override
     public String toString() {
-        return currency.getSymbol() + " " + value.setScale(currency.getDefaultFractionDigits(), HALF_UP);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMinimumFractionDigits(currency.getDefaultFractionDigits());
+        numberFormat.setMaximumFractionDigits(currency.getDefaultFractionDigits());
+        return currency.getSymbol() + " " + numberFormat.format(value.doubleValue());
     }
 
     @Override
