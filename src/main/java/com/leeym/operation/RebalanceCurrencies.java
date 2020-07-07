@@ -74,8 +74,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
     private final ProfileId profileId;
     private final Map<Currency, Map<Currency, Rate>> rates;
 
-    public RebalanceCurrencies(ProfileId profileId, AccountsApi accountsApi, RatesApi ratesApi,
-                               QuotesApi quotesApi) {
+    public RebalanceCurrencies(ProfileId profileId, AccountsApi accountsApi, RatesApi ratesApi, QuotesApi quotesApi) {
         this.accountsApi = accountsApi;
         this.ratesApi = ratesApi;
         this.quotesApi = quotesApi;
@@ -198,7 +197,10 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 minAmount = pairs.get(currency).flatMap(s -> s.get(USD)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             } else {
                 // source: USD, target: currency
-                maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount).orElse(BigDecimal.valueOf(Long.MAX_VALUE));
+                BigDecimal rate = rates.get(USD).get(currency).getRate();
+                BigDecimal volume = BigDecimal.valueOf(0.99);
+                maxAmount = pairs.get(USD).map(s -> s.maxInvoiceAmount.multiply(volume).multiply(rate))
+                        .orElse(BigDecimal.valueOf(Long.MAX_VALUE));
                 minAmount = pairs.get(USD).flatMap(s -> s.get(currency)).map(t -> t.minInvoiceAmount).orElse(ZERO);
             }
 
@@ -216,7 +218,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 value = value.min(maxAmount);
             }
             if (value.compareTo(minAmount) < 0) {
-                log(WARNING, String.format("Skip %s of %s since it is below %s", currency, numberFormat.format(value),
+                log(WARNING, String.format("Skip %s of %s which is below %s", currency, numberFormat.format(value),
                         numberFormat.format(minAmount)));
                 continue;
             }
