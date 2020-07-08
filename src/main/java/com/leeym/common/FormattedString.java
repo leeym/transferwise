@@ -17,6 +17,7 @@ public abstract class FormattedString {
         if (Objects.isNull(string)) {
             throw new NullPointerException(getClass().getSimpleName() + " can't be null");
         }
+        string = string.trim();
         if (string.isEmpty()) {
             throw new IllegalArgumentException(getClass().getSimpleName() + " can't be empty");
         }

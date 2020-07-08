@@ -23,6 +23,12 @@ public class ApiTokenTest {
     }
 
     @Test
+    public void testSpaceOnly() {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> new ApiToken(" ", SANDBOX));
+        assertEquals("ApiToken can't be empty", e.getMessage());
+    }
+
+    @Test
     public void testInvalid() {
         Exception e = assertThrows(IllegalArgumentException.class, () -> new ApiToken("foobar", SANDBOX));
         assertEquals("ApiToken [foobar] doesn't match [^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$]",
