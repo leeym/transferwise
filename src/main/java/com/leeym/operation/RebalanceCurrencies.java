@@ -73,6 +73,7 @@ public class RebalanceCurrencies implements Callable<List<String>> {
     private final QuotesApi quotesApi;
     private final ProfileId profileId;
     private final Map<Currency, Map<Currency, Rate>> rates;
+    private final List<BalanceCurrency> balanceCurrencies;
 
     public RebalanceCurrencies(ProfileId profileId, AccountsApi accountsApi, RatesApi ratesApi, QuotesApi quotesApi) {
         this.accountsApi = accountsApi;
@@ -80,10 +81,13 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         this.quotesApi = quotesApi;
         this.profileId = profileId;
         this.rates = getRates();
+        this.balanceCurrencies = getBalanceCurrencies();
     }
 
     @Override
     public List<String> call() {
+        log(CONFIG, "IDEAL_PORTFOLIO: " + IDEAL_PORTFOLIO);
+        log(CONFIG, "UNWANTED_CURRENCIES: " + UNWANTED_CURRENCIES);
         Account account = accountsApi.getAccount(profileId);
         log(SEVERE, "Before: " + calculate(account));
         List<Amount> orders = evaluate(account);
@@ -101,6 +105,11 @@ public class RebalanceCurrencies implements Callable<List<String>> {
                 .orElse(new Amount(USD, ZERO));
     }
 
+    private List<BalanceCurrency> getBalanceCurrencies() {
+        assert accountsApi != null;
+        return accountsApi.getBalanceCurrencies();
+    }
+
     private Map<Currency, Map<Currency, Rate>> getRates() {
         assert ratesApi != null;
         Map<Currency, Map<Currency, Rate>> map = new HashMap<>();
@@ -115,14 +124,20 @@ public class RebalanceCurrencies implements Callable<List<String>> {
         return map;
     }
 
+    private boolean unwanted(Currency currency) {
+        return UNWANTED_CURRENCIES.contains(currency);
+    }
+
+    private boolean unsupported(Currency currency) {
+        return balanceCurrencies.stream().noneMatch(b -> b.getCode().equals(currency));
+    }
+
     private Map<Currency, Double> getOptimalPortfolio() {
-        List<BalanceCurrency> balanceCurrencies = accountsApi.getBalanceCurrencies();
-        log(CONFIG, "IDEAL_PORTFOLIO: " + IDEAL_PORTFOLIO);
-        log(CONFIG, "UNWANTED_CURRENCIES: " + UNWANTED_CURRENCIES);
         Map<Currency, Double> optimalPortfolio = IDEAL_PORTFOLIO.entrySet().stream()
-                .filter(entry -> !UNWANTED_CURRENCIES.contains(entry.getKey()))
-                .filter(entry -> balanceCurrencies.stream().anyMatch(b -> b.getCode().equals(entry.getKey())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toMap(
+                        e -> unwanted(e.getKey()) || unsupported(e.getKey()) ? USD : e.getKey(),
+                        Map.Entry::getValue,
+                        Double::sum));
         Sets.SetView<Currency> unsupported = Sets.difference(IDEAL_PORTFOLIO.keySet(), optimalPortfolio.keySet());
         log(INFO, "Ignore unsupported/unwanted currencies: " + unsupported);
         return optimalPortfolio;
